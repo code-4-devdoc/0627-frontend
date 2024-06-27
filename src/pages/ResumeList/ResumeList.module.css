@@ -1,0 +1,234 @@
+
+.App {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+.leftPanel {
+    background-color: #001e59;
+    min-width: 200px;
+    width: 23%;
+    height: 100%;
+    display: flex; /* 추가된 부분 */
+    flex-direction: column; /* 추가된 부분 */
+    justify-content: flex-start; /* 추가된 부분 */
+    align-items: flex-start; /* 추가된 부분 */
+    padding: 20px; /* 추가된 부분 */
+    box-sizing: border-box; /* 추가된 부분 */
+}
+
+.devdocTitle {
+    color: white; /* 추가된 부분 */
+    margin: 0; /* 추가된 부분 */
+    font-size: 5rem; /* 추가된 부분 */
+}
+
+
+h1.title {
+    font-size: 2rem; /* 이력서 생성 */
+}
+
+h2.title {
+    font-size: 1.7rem; /* 이력서 관리 */
+}
+
+
+.rightPanel {
+    background-color: white;
+    min-width: 600px;
+    width: 77%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.title {
+    margin: 0;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+
+.inputContainer {
+    background-color: #edf3fd;
+    border-radius: 10px; /* 둥근 모서리 */
+    padding: 20px; /* 내부 여백 */
+    margin-bottom: 20px; /* 하단 여백 */
+    width: 730px;
+    align-items: center;
+}
+
+.label {
+    font-size: 1.5rem;
+    margin-right: 10px; /* 간격 추가 */
+    align-self: center; /* 수직 정렬 */
+}
+
+.resumeInputBox {
+    width: 730px;
+    background-color: white;
+    border-radius: 5px;
+    display: flex;
+    align-items: center; /* 수직 정렬 */
+}
+
+.resumeInput {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 5px;
+    width: 100%; /* 부모 요소에 맞게 넓이 설정 */
+}
+
+.resumeInput input {
+    font-size: 1.2rem;
+    padding: 1rem;
+    flex: 1; /* 남은 공간을 모두 차지하도록 설정 */
+    height: 38px;
+    box-sizing: border-box;
+    border: none;
+    margin-right: 10px; /* 버튼과의 간격 */
+}
+
+.resumeInput input:focus {
+    outline: none;
+    border: none;
+}
+
+.resumeInputButton {
+    width: 80px;
+    height: 50px;
+    background-color: rgba(0, 69, 171, 1);
+    color: white;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* 버튼 텍스트를 가로로 정렬 */
+    white-space: nowrap; /* 텍스트가 한 줄로 유지되도록 설정 */
+}
+
+.inputDescription {
+    font-size: 0.8rem;
+    color: gray;
+    margin-top: 10px; /* 약간의 여백 추가 */
+}
+
+.divider {
+    width: 100%;
+    height: 1px;
+    background-color: #ddd;
+    margin: 20px 0;
+
+}
+
+.resumeListsContainer {
+    background-color: #edf3fd;
+    border-radius: 10px;
+    width: 750px;
+    padding: 10px;
+}
+
+.resumeTable {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+}
+
+.resumeInfo {
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+}
+
+
+.resumeTable td {
+    padding: 15px;
+    background-color: white;
+    height: 50px;
+}
+
+.resumeTitle {
+    font-size: 1.5rem;
+    color: rgba(0, 30, 89, 1);
+    text-align: left; /* 왼쪽 정렬 */
+    cursor: pointer;
+    font-weight: bold;
+    /* text-decoration: underline; */
+}
+
+.resumeDate {
+    font-size: 0.7rem;
+    color: gray;
+    text-align: left; /* 왼쪽 정렬 */
+}
+
+.resumeActions {
+    display: flex;
+    justify-content: flex-end; /* 오른쪽 정렬 */
+    gap: 10px;
+    text-align: right;
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+}
+
+.noResumes {
+    text-align: center;
+    color: gray;
+    font-size: 1rem;
+    margin-top: 20px;
+}
+
+.resumeActions button {
+    font-size: 1rem;
+    padding: 0.5rem;
+    color: rgba(129, 172, 255, 1);
+    background-color: transparent;
+    border: 2px solid rgba(129, 172, 255, 1);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.resumeActions button:hover {
+    background-color: rgba(129, 172, 255, 1); /* 마우스 오버 시 배경색 */
+    color: white;
+}
+
+/* pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+}
+
+.pagination li {
+    display: inline;
+    margin: 0 10px;
+}
+
+.pagination li a {
+    text-decoration: none;
+    color: rgba(0, 30, 89, 1);
+}
+
+.pagination li a:hover {
+    /* text-decoration: underline;*/
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.active a {
+    font-weight: bold;
+}
