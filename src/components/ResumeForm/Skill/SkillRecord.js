@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import styled from "styled-components";
 import SkillSearchComponent from "../SearchSkills/SkillSearchComponent";
 import { call } from "../../../service/ApiService";
+import ReactQuill from "react-quill";
 
 const Border = styled.div`
     border-style: solid;
@@ -11,6 +12,7 @@ const Border = styled.div`
     margin-bottom: 10px;
     padding-left: 20px;
     padding-bottom: 20px;
+    height: 130px;
 `;
 
 const Input = styled.textarea`
@@ -23,6 +25,25 @@ const Input = styled.textarea`
     height: 60px;
     font-family: inherit;
 `;
+
+const formats = [
+    'font',
+    'header',
+    'bold',
+    'italic',
+    'underline',
+    'strike',
+    'blockquote',
+    'list',
+    'bullet',
+    'indent',
+    'link',
+    'align',
+    'color',
+    'background',
+    'size',
+    'h1',
+];
 
 const SkillRecord = ({ index, skill, onRemove, onUpdate, resumeId }) => {
 
@@ -38,6 +59,25 @@ const SkillRecord = ({ index, skill, onRemove, onUpdate, resumeId }) => {
             console.error("Failed to delete skill data", error);
         }
     };
+
+    const modules = useMemo(() => {
+        return {
+            toolbar: {
+                container: [
+                    [{ size: ['small', false, 'large', 'huge'] }],
+                    [{ align: [] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ list: 'ordered' }, { list: 'bullet' }],
+                    [
+                        {
+                            color: [],
+                        },
+                        { background: [] },
+                    ],
+                ],
+            },
+        };
+    }, []);
 
     return (
         <Border>
@@ -60,10 +100,18 @@ const SkillRecord = ({ index, skill, onRemove, onUpdate, resumeId }) => {
                     selectedSkills={skill.techStack || ""}
                     onSkillChange={(skills) => handleInputChange('techStack', skills)}
                 />
-                <Input
-                    placeholder="부연 설명을 입력하세요."
+                {/*<Input*/}
+                {/*    placeholder="부연 설명을 입력하세요."*/}
+                {/*    value={skill.description}*/}
+                {/*    onChange={(e) => handleInputChange('description', e.target.value)}*/}
+                {/*/>*/}
+                <ReactQuill
+                    theme="snow"
+                    modules={modules}
+                    formats={formats}
+                    style={{width: 620, height:60}}
+                    onChange={(content) => onUpdate(index, 'description', content)}
                     value={skill.description}
-                    onChange={(e) => handleInputChange('description', e.target.value)}
                 />
             </div>
         </Border>
