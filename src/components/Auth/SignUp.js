@@ -33,7 +33,7 @@ class SignUp extends React.Component {
           </div>
           <div className="rightPanel">
             <div className="loginContainer">
-              <h1 className="loginTitle">회원 가입</h1>
+              <h1 className="loginTitle">회원가입</h1>
               <form onSubmit={this.handleSubmit}>
                 <input
                     type="text"
