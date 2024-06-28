@@ -75,26 +75,3 @@
         margin-bottom: 10px !important; /* 인쇄 시 항목 간의 간격을 줄이기 위해 수정 */
     }
 }
-
-
-
-
-/*
-.container {
-    width: 80vw;
-    height: 85vh;
-    display: flex;
-    flex-direction: row;
-}
-
-.left-panel {
-    width: 40%;
-    height: 100%;
-    background-color: rgba(0, 30, 89, 1);
-}
-
-.right-panel {
-    width: 60%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 1);
-}*/

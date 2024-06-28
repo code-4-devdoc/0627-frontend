@@ -42,7 +42,7 @@ class Login extends React.Component {
                 <input
                     type="password"
                     name="password"
-                    placeholder="패스워드"
+                    placeholder="비밀번호"
                     required
                     className="textField"
                 />
