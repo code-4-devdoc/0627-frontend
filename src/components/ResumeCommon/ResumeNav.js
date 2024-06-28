@@ -9,6 +9,8 @@ const Container = styled.div`
     display: flex;
     justify-content: space-between;
     width: 1470px;
+    padding-right: 20px;
+    background-color:rgba(239, 245, 255, 1);
 `;
 
 const LogoLabel = styled.div`
@@ -26,11 +28,12 @@ const LogoLabel = styled.div`
 const NavButton = styled.button`
     height: 45px;
     width: 100px;
-    font-size: 18px;
+    font-size: 17px;
     font-weight: bold;
     padding: 10px;
     border-radius: 5px 5px 0 0;
     background-color: white;
+    border-bottom-style: none;
     color: rgba(0, 30, 89, 1);
     border-color: rgba(0, 30, 89, 1);
     margin-left: 10px;
