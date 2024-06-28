@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 const BlankSectionContainer = styled.div`
     height: 100px; // 빈 공간의 높이
-    width: 700px;
+    width: 800px;
     position: relative;
     margin-bottom: 20px; // 항목들 사이에 일정 간격 추가
     

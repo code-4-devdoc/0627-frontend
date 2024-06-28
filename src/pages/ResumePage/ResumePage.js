@@ -10,7 +10,7 @@ import { call } from "../../service/ApiService";
 const CategoryContainer = styled.div`
     margin-left: 20px;
     width: 400px;
-    height: 625px;
+    height: 630px;
     background-color: rgba(0, 30, 89, 1);
 `;
 
@@ -36,22 +36,10 @@ const Line = styled.div`
     background-color: rgba(0, 30, 89, 1);
 `;
 
-const Button = styled.button`
-    width: 90px;
-    height: 40px;
-    background-color: rgba(0, 69, 171, 1);
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-`;
-
 const ResumeTitle = styled.input`
     display: flex;
     align-items: center;
-    width: 700px;
+    width: 740px;
     height: 40px;
     font-size: 20px;
     padding: 10px;
@@ -61,7 +49,10 @@ const ResumeTitle = styled.input`
     border-style: solid;
     line-height: 1.5;
     box-sizing: border-box;
-    margin-left: 10px;
+`;
+
+const Button = styled.button`
+    display: none;
 `;
 
 function ResumePage({ baseUrl }) {
@@ -75,12 +66,13 @@ function ResumePage({ baseUrl }) {
     const [careers, setCareers] = useState([]);
     const [projects, setProjects] = useState([]);
     const [certificates, setCertificates] = useState([]);
+    const [freeFormContent, setFreeFormContent] = useState('');
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await call(`/api/resumes/${resumeId}`, "GET");
-                const { title, languages, awards, skills, careers, certificates, projects } = response;
+                const { title, languages, awards, skills, careers, certificates, projects, freeFormContent } = response;
                 setResumeTitle(title || "");
                 setLanguages(languages || []);
                 setAwards(awards || []);
@@ -88,7 +80,8 @@ function ResumePage({ baseUrl }) {
                 setCareers(careers || []);
                 setProjects(projects || []);
                 setCertificates(certificates || []);
-                //setActiveSections(['Language', 'Award', 'Skill', 'Career', 'Project', 'Certificate']);  // 항상 섹션을 활성화
+                setFreeFormContent(freeFormContent || '');
+                // setActiveSections(['Language', 'Award', 'Skill', 'Career', 'Project', 'Certificate', 'FreeForm']);  // 항상 섹션을 활성화
             } catch (error) {
                 console.error("Failed to fetch resume data", error);
             }
@@ -114,6 +107,7 @@ function ResumePage({ baseUrl }) {
                 careers: careers,
                 projects: projects,
                 certificates: certificates,
+                freeFormContent: freeFormContent,
             };
 
             await call(`/api/resumes/${resumeId}/save`, "POST", data);
@@ -136,7 +130,7 @@ function ResumePage({ baseUrl }) {
     return (
         <div className="app">
             <div className="nav">
-                <ResumeNav defaultActive="작성" />
+                <ResumeNav defaultActive="작성" handleSave={handleSave} handlePrint={handlePrint} />
             </div>
             <div style={{ display: 'flex' }}>
                 <div className="category-container">
@@ -149,23 +143,22 @@ function ResumePage({ baseUrl }) {
                     </CategoryContainer>
                 </div>
                 <div className="form-container">
-                    <div style={{ marginTop: 25, marginRight: 25, display: "flex", justifyContent: 'end', gap: 10 }}>
-                        <Button onClick={handleSave}>전체 저장</Button>
-                        <Button onClick={handlePrint}>PDF 인쇄</Button>
-                    </div>
-                    <div id="printContent" style={{ width: '100%', background: 'white' }}>
-                        <div style={{ display: 'flex', justifyContent: 'left', marginTop: 30, marginBottom: 10 }}>
+                    <div id="printContent" style={{ width: '100%',  background: 'white', margin: '0 auto' }}>
+                        <div style={{ display: 'flex', justifyContent: 'center', marginTop: 30, marginBottom: 10 }}>
                             <ResumeTitle type="text" value={resumeTitle} onChange={handleTitleChange} placeholder="이력서 제목 (저장용)" />
                         </div>
-                        <FormContent activeSections={activeSections}
-                                     languages={languages} setLanguages={setLanguages}
-                                     awards={awards} setAwards={setAwards}
-                                     skills={skills} setSkills={setSkills}
-                                     careers={careers} setCareers={setCareers}
-                                     projects={projects} setProjects={setProjects}
-                                     certificates={certificates} setCertificates={setCertificates}
-                                     resumeId={resumeId}
-                                     onRemoveBlankSection={handleRemoveBlankSection}
+                        <FormContent
+                            activeSections={activeSections}
+                            setActiveSections={setActiveSections}
+                            languages={languages} setLanguages={setLanguages}
+                            awards={awards} setAwards={setAwards}
+                            skills={skills} setSkills={setSkills}
+                            careers={careers} setCareers={setCareers}
+                            projects={projects} setProjects={setProjects}
+                            certificates={certificates} setCertificates={setCertificates}
+                            resumeId={resumeId}
+                            onRemoveBlankSection={handleRemoveBlankSection}
+                            freeFormContent={freeFormContent} setFreeFormContent={setFreeFormContent}
                         />
                     </div>
                 </div>

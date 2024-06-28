@@ -115,7 +115,7 @@ function ResumeList({ baseUrl }) {
               <div className={styles.resumeInput}>
                 <input
                     type="text"
-                    placeholder="작성할 이력서의 제목을 입력하고 생성 버튼을 누르세요."
+                    placeholder="이력서의 제목을 입력하세요."
                     value={newTitle}
                     onChange={(e) => setNewTitle(e.target.value)}
                 />

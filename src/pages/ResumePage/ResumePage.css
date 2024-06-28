@@ -44,9 +44,9 @@
 }
 
 .section-content {
-    padding-left: 165px;
+    padding-left: 132.5px;
     padding-top: 30px;
-    padding-right: 100px;
+    padding-right: 132.5px;
 }
 
 
@@ -63,12 +63,20 @@
 
     #printContent {
         position: absolute;
-        left: 0;
+        left: 50%;
         top: 0;
-        width: 100%;
+        transform: translateX(-50%) scale(1.2);
+        transform-origin: top center;
+        width: 80%;
         height: auto;
     }
+
+    .container {
+        margin-bottom: 10px !important; /* 인쇄 시 항목 간의 간격을 줄이기 위해 수정 */
+    }
 }
+
+
 
 
 /*
