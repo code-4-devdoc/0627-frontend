@@ -15,24 +15,14 @@ const sections = [
     { name: 'Blank', detail: '빈 항목' } // 빈 항목 추가
 ];
 
-
 const CategoryList = ({ onSectionChange, activeSections }) => {
     // 섹션 상태 관리
     const [sectionStates, setSectionStates] = useState([]);
 
-    // 컴포넌트가 마운트될 때 로컬 스토리지에서 섹션 상태 불러오기
     useEffect(() => {
-        const savedSections = JSON.parse(localStorage.getItem('sectionStates'));
-        if (savedSections) {
-            setSectionStates(savedSections);
-            onSectionChange(savedSections);
-        }
-    }, []);
-
-    // 섹션 상태가 변경될 때마다 로컬 스토리지에 저장
-    useEffect(() => {
-        localStorage.setItem('sectionStates', JSON.stringify(sectionStates));
-    }, [sectionStates]);
+        // 초기 로드 시 activeSections를 sectionStates로 설정
+        setSectionStates(activeSections);
+    }, [activeSections]);
 
     // 섹션 토글 함수
     const toggleSection = (section) => {
