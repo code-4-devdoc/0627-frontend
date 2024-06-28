@@ -66,13 +66,13 @@ function ResumePage({ baseUrl }) {
     const [careers, setCareers] = useState([]);
     const [projects, setProjects] = useState([]);
     const [certificates, setCertificates] = useState([]);
-    const [freeFormContent, setFreeFormContent] = useState('');
+
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await call(`/api/resumes/${resumeId}`, "GET");
-                const { title, languages, awards, skills, careers, certificates, projects, freeFormContent } = response;
+                const { title, languages, awards, skills, careers, certificates, projects } = response;
                 setResumeTitle(title || "");
                 setLanguages(languages || []);
                 setAwards(awards || []);
@@ -80,8 +80,18 @@ function ResumePage({ baseUrl }) {
                 setCareers(careers || []);
                 setProjects(projects || []);
                 setCertificates(certificates || []);
-                setFreeFormContent(freeFormContent || '');
-                // setActiveSections(['Language', 'Award', 'Skill', 'Career', 'Project', 'Certificate', 'FreeForm']);  // 항상 섹션을 활성화
+                if (resumeId && response) {
+                    setActiveSections([
+                        ...(languages.length ? ['Language'] : []),
+                        ...(awards.length ? ['Award'] : []),
+                        ...(skills.length ? ['Skill'] : []),
+                        ...(careers.length ? ['Career'] : []),
+                        ...(projects.length ? ['Project'] : []),
+                        ...(certificates.length ? ['Certificate'] : [])
+                    ]);
+                } else {
+                    setActiveSections([]);
+                }
             } catch (error) {
                 console.error("Failed to fetch resume data", error);
             }
@@ -90,7 +100,7 @@ function ResumePage({ baseUrl }) {
     }, [resumeId]);
 
     const handleSectionChange = (sections) => {
-        setActiveSections(sections);
+        setActiveSections(prevSections => [...new Set([...prevSections, ...sections])]);
     };
 
     const handleTitleChange = (event) => {
@@ -106,8 +116,7 @@ function ResumePage({ baseUrl }) {
                 skills: skills,
                 careers: careers,
                 projects: projects,
-                certificates: certificates,
-                freeFormContent: freeFormContent,
+                certificates: certificates
             };
 
             await call(`/api/resumes/${resumeId}/save`, "POST", data);
@@ -158,7 +167,6 @@ function ResumePage({ baseUrl }) {
                             certificates={certificates} setCertificates={setCertificates}
                             resumeId={resumeId}
                             onRemoveBlankSection={handleRemoveBlankSection}
-                            freeFormContent={freeFormContent} setFreeFormContent={setFreeFormContent}
                         />
                     </div>
                 </div>

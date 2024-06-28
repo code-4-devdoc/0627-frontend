@@ -8,7 +8,7 @@ import CertificateSection from "./Certificate/CertificateSection";
 import BlankSection from './Blank/BlankSection';
 
 
-const FormContent = ({ activeSections, freeFormContent, setFreeFormContent, languages, setLanguages, awards, setAwards, skills, setSkills, careers, setCareers, projects, setProjects, certificates, setCertificates, resumeId, onRemoveBlankSection }) => {
+const FormContent = ({ activeSections, languages, setLanguages, awards, setAwards, skills, setSkills, careers, setCareers, projects, setProjects, certificates, setCertificates, resumeId, onRemoveBlankSection }) => {
     return (
         <div className="section-content">
             {activeSections.map((section, index) => {
