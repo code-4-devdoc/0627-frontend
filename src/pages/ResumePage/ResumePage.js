@@ -67,7 +67,6 @@ function ResumePage({ baseUrl }) {
     const [projects, setProjects] = useState([]);
     const [certificates, setCertificates] = useState([]);
 
-
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -100,7 +99,7 @@ function ResumePage({ baseUrl }) {
     }, [resumeId]);
 
     const handleSectionChange = (sections) => {
-        setActiveSections(prevSections => [...new Set([...prevSections, ...sections])]);
+        setActiveSections(sections); // 기존 섹션을 유지하고 새로운 섹션 추가/제거
     };
 
     const handleTitleChange = (event) => {
