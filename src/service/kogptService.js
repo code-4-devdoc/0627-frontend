@@ -3,7 +3,7 @@ import { API_BASE_URL } from '../app-config';
 const ACCESS_TOKEN = "ACCESS_TOKEN";
 
 // kogptService를 통해 백엔드에서 텍스트 생성 API 호출
-export const kogptService = async (prompt) => {
+export const kogptService = async (prompt, maxTokens) => {
     const accessToken = localStorage.getItem(ACCESS_TOKEN);
     const headers = {
         'Content-Type': 'application/json'
@@ -12,7 +12,7 @@ export const kogptService = async (prompt) => {
         headers['Authorization'] = `Bearer ${accessToken}`;
     }
     try {
-        const response = await axios.post(`${API_BASE_URL}/api/kogpt/generate`, { prompt }, { headers });
+        const response = await axios.post(`${API_BASE_URL}/api/kogpt/generate`, { prompt, maxTokens }, { headers });
         return response.data;
     } catch (error) {
         console.error('Error generating text:', error);
