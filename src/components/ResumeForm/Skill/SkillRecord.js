@@ -94,7 +94,7 @@ const SkillRecord = ({ index, skill, onRemove, onUpdate, resumeId }) => {
                 </button>
             </div>
             <div style={{ height: 5 }}></div>
-            <div style={{ display: "flex", alignItems: 'center', gap: 15, paddingLeft: 15, paddingRight: 15, marginBottom: 5 }}>
+            <div style={{ display: "flex", alignItems: 'center', gap: 15, paddingLeft: 0, paddingRight: 15, marginBottom: 5 }}>
                 <SkillSearchComponent 
                     singleSelection={true}
                     selectedSkills={skill.techStack || ""}
@@ -109,7 +109,7 @@ const SkillRecord = ({ index, skill, onRemove, onUpdate, resumeId }) => {
                     theme="snow"
                     modules={modules}
                     formats={formats}
-                    style={{width: 620, height:60}}
+                    style={{width: 550, height:60}}
                     onChange={(content) => onUpdate(index, 'description', content)}
                     value={skill.description}
                 />

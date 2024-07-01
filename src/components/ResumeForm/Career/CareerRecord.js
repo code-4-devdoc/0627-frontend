@@ -162,7 +162,7 @@ const CareerRecord = ({ body, setBody, index, career, onRemove, onUpdate, resume
                 theme="snow"
                 modules={modules}
                 formats={formats}
-                style={{width: 620, height:60}}
+                style={{width: 640, height:60}}
                 onChange={(content) => onUpdate(index, 'description', content)}
                 value={career.description}
             />

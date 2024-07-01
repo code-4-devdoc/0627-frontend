@@ -6,6 +6,8 @@ import styled from "styled-components";
 import CategoryList from "../../components/ResumeCategory/CategoryList";
 import FormContent from "../../components/ResumeForm/FormContent";
 import { call } from "../../service/ApiService";
+import { kogptService } from "../../service/kogptService";
+import axios from "axios";
 
 // ResumePage.js: 이력서 작성 페이지(/resumes/{resumeId})를 구성, 데이터 불러오기, 저장하기 등의 기능을 담당
 
@@ -135,6 +137,30 @@ function ResumePage({ baseUrl }) {
         window.print();
     };
 
+    const [prompt, setPrompt] = useState('');
+    const [generatedText, setGeneratedText] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('');
+
+    const generateText = async () => {
+        setIsLoading(true);
+        setError('');
+        try {
+            const response = await kogptService(prompt);
+            if (response && response.generations && response.generations.length > 0) {
+                setGeneratedText(response.generations[0].text);
+            } else {
+                setGeneratedText('No text generated.');
+            }
+        } catch (error) {
+            setError('텍스트 생성 중 오류가 발생했습니다.');
+            console.error('API call error:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+
     return (
         <div className="app">
             <div className="nav">
@@ -142,38 +168,52 @@ function ResumePage({ baseUrl }) {
             </div>
             <div style={{ display: 'flex' }}>
                 <div className="category-container">
-                    <CategoryContainer style={{ display: "flex", justifyContent: 'center', alignItems: 'center' }}>
+                    <CategoryContainer style={{display: "flex", justifyContent: 'center', alignItems: 'center'}}>
                         <CategoryContainer2>
                             <Title>이력서 항목</Title>
-                            <Line />
+                            <Line/>
                             <CategoryList onSectionChange={handleSectionChange}></CategoryList>
                         </CategoryContainer2>
                     </CategoryContainer>
+                    <div style={{width: 300, textAlign: 'center', marginLeft: 50, marginTop: 15 }}>
+                        <input
+                            type="text"
+                            value={prompt}
+                            onChange={(e) => setPrompt(e.target.value)}
+                            placeholder="Enter your prompt here"
+                        />
+                        <button onClick={generateText} disabled={isLoading}>
+                            {isLoading ? 'Loading...' : 'Generate Text'}
+                        </button>
+                        {generatedText && <p>Generated Text: {generatedText}</p>}
+                        {error && <p>Error: {error}</p>}
+                    </div>
                 </div>
                 <div className="form-container">
-                    <div style={{ marginTop: 25, marginRight: 25, display: "flex", justifyContent: 'end', gap: 10 }}>
+                    <div style={{marginTop: 25, marginRight: 25, display: "flex", justifyContent: 'end', gap: 10}}>
                         <Button onClick={handleSave}>전체 저장</Button>
                         <Button onClick={handlePrint}>PDF 인쇄</Button>
                     </div>
-                    <div id="printContent" style={{ width: '100%', padding: '20px', background: 'white' }}>
-                        <div style={{ display: 'flex', justifyContent: 'center', marginTop: 30, marginBottom: 10 }}>
-                            <ResumeTitle type="text" value={resumeTitle} onChange={handleTitleChange} placeholder="이력서 제목 (저장용)" />
+                    <div id="printContent" style={{width: '100%', padding: '20px', background: 'white'}}>
+                        <div style={{display: 'flex', justifyContent: 'center', marginTop: 30, marginBottom: 10}}>
+                            <ResumeTitle type="text" value={resumeTitle} onChange={handleTitleChange}
+                                         placeholder="이력서 제목 (저장용)"/>
                         </div>
-                        <FormContent activeSections={activeSections} 
-                            languages={languages} setLanguages={setLanguages}
-                            awards={awards} setAwards={setAwards}
-                            skills={skills} setSkills={setSkills}
-                            careers={careers} setCareers={setCareers}
-                            projects={projects} setProjects={setProjects}
-                            certificates={certificates} setCertificates={setCertificates}
-                            resumeId={resumeId}
-                        />
                     </div>
+                    <FormContent activeSections={activeSections}
+                                 languages={languages} setLanguages={setLanguages}
+                                 awards={awards} setAwards={setAwards}
+                                 skills={skills} setSkills={setSkills}
+                                 careers={careers} setCareers={setCareers}
+                                 projects={projects} setProjects={setProjects}
+                                 certificates={certificates} setCertificates={setCertificates}
+                                 resumeId={resumeId}
+                    />
                 </div>
             </div>
         </div>
     );
-};
+}
 
 export default ResumePage;
 

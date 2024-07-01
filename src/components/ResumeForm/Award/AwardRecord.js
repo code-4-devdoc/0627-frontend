@@ -122,7 +122,7 @@ const AwardRecord = ({ index, award, onRemove, onUpdate, resumeId }) => {
                 theme="snow"
                 modules={modules}
                 formats={formats}
-                style={{width: 620, height:60}}
+                style={{width: 640, height:60}}
                 onChange={(content) => onUpdate(index, 'description', content)}
                 value={award.description}
             />
