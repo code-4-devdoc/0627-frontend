@@ -157,6 +157,7 @@ function ResumePage({ baseUrl }) {
     };
 
     const [prompt, setPrompt] = useState('');
+    const [maxTokens, setMaxTokens] = useState(50); // default value for maxTokens
     const [generatedText, setGeneratedText] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
@@ -165,7 +166,7 @@ function ResumePage({ baseUrl }) {
         setIsLoading(true);
         setError('');
         try {
-            const response = await kogptService(prompt);
+            const response = await kogptService(prompt, maxTokens);
             if (response && response.generations && response.generations.length > 0) {
                 setGeneratedText(response.generations[0].text);
             } else {
@@ -194,12 +195,20 @@ function ResumePage({ baseUrl }) {
                             <CategoryList onSectionChange={handleSectionChange} activeSections={activeSections}></CategoryList>
                         </CategoryContainer2>
                     </CategoryContainer>
-                    <div style={{width: 300, textAlign: 'center', marginLeft: 50, marginTop: 15 }}>
+                    <div style={{width: 300, textAlign: 'center', marginLeft: 40, marginTop: 15}}>
                         <input
-                            type="text"
+                            type="textarea"
                             value={prompt}
+                            style={{width: 350, height: 30}}
                             onChange={(e) => setPrompt(e.target.value)}
                             placeholder="Enter your prompt here"
+                        />
+                        <input
+                            type="number"
+                            style={{width:60}}
+                            value={maxTokens}
+                            onChange={(e) => setMaxTokens(parseInt(e.target.value))}
+                            placeholder="Max Tokens"
                         />
                         <button onClick={generateText} disabled={isLoading}>
                             {isLoading ? 'Loading...' : 'Generate Text'}
