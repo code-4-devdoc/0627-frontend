@@ -6,6 +6,10 @@ import styled from "styled-components";
 import CategoryList from "../../components/ResumeCategory/CategoryList";
 import FormContent from "../../components/ResumeForm/FormContent";
 import { call } from "../../service/ApiService";
+import { kogptService } from "../../service/kogptService";
+import axios from "axios";
+
+// ResumePage.js: 이력서 작성 페이지(/resumes/{resumeId})를 구성, 데이터 불러오기, 저장하기 등의 기능을 담당
 
 const CategoryContainer = styled.div`
     margin-left: 20px;
@@ -71,6 +75,7 @@ function ResumePage({ baseUrl }) {
     const [aboutMe, setAboutMe] = useState({});
     const [educations, setEducations] = useState([]);
 
+    // 데이터 불러오기
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -106,14 +111,17 @@ function ResumePage({ baseUrl }) {
         fetchData();
     }, [resumeId]);
 
+    // 항목 변경
     const handleSectionChange = (sections) => {
         setActiveSections(sections); // 기존 섹션을 유지하고 새로운 섹션 추가/제거
     };
 
+    // 제목 변경
     const handleTitleChange = (event) => {
         setResumeTitle(event.target.value);
     };
 
+    // 전체 저장
     const handleSave = async () => {
         try {
             const data = {
@@ -139,6 +147,7 @@ function ResumePage({ baseUrl }) {
         }
     };
 
+    // PDF 인쇄, 저장, 미리보기
     const handlePrint = () => {
         window.print();
     };
@@ -146,6 +155,30 @@ function ResumePage({ baseUrl }) {
     const handleRemoveBlankSection = (index) => {
         setActiveSections(prevSections => prevSections.filter((_, i) => i !== index));
     };
+
+    const [prompt, setPrompt] = useState('');
+    const [generatedText, setGeneratedText] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('');
+
+    const generateText = async () => {
+        setIsLoading(true);
+        setError('');
+        try {
+            const response = await kogptService(prompt);
+            if (response && response.generations && response.generations.length > 0) {
+                setGeneratedText(response.generations[0].text);
+            } else {
+                setGeneratedText('No text generated.');
+            }
+        } catch (error) {
+            setError('텍스트 생성 중 오류가 발생했습니다.');
+            console.error('API call error:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
 
     return (
         <div className="app">
@@ -161,6 +194,19 @@ function ResumePage({ baseUrl }) {
                             <CategoryList onSectionChange={handleSectionChange} activeSections={activeSections}></CategoryList>
                         </CategoryContainer2>
                     </CategoryContainer>
+                    <div style={{width: 300, textAlign: 'center', marginLeft: 50, marginTop: 15 }}>
+                        <input
+                            type="text"
+                            value={prompt}
+                            onChange={(e) => setPrompt(e.target.value)}
+                            placeholder="Enter your prompt here"
+                        />
+                        <button onClick={generateText} disabled={isLoading}>
+                            {isLoading ? 'Loading...' : 'Generate Text'}
+                        </button>
+                        {generatedText && <p>Generated Text: {generatedText}</p>}
+                        {error && <p>Error: {error}</p>}
+                    </div>
                 </div>
                 <div className="form-container">
                     <div id="printContent" style={{ width: '100%',  background: 'white', margin: '0 auto' }}>
@@ -188,6 +234,7 @@ function ResumePage({ baseUrl }) {
             </div>
         </div>
     );
-};
+}
 
 export default ResumePage;
+
