@@ -21,17 +21,10 @@ const Input = styled.input`
 `;
 
 const ActivityRecord = ({ index, activity, onRemove, onUpdate, resumeId }) => {
+    const checkboxOption = "진행중";
+    const [isChecked, setIsChecked] = useState(activity.isCurrent);
     const [error, setError] = useState('');
 
-    const [isChecked, setIsChecked] = useState(activity.endDate === '');
-    const [startDate, setStartDate] = useState(activity.startDate || '');
-    const [endDate, setEndDate] = useState(activity.endDate || '');
-
-    useEffect(() => {
-        setIsChecked(activity.endDate === '');
-        setStartDate(activity.startDate || '');
-        setEndDate(activity.endDate || '');
-    }, [activity]);
 
     const handleInputChange = (field, value) => {
         onUpdate(index, field, value);
@@ -41,26 +34,30 @@ const ActivityRecord = ({ index, activity, onRemove, onUpdate, resumeId }) => {
         return /^\d{4}\.\d{2}$/.test(date);
     };
 
-    const handleDateChange = (field, value) => {
-        if (field === 'startDate') {
-            setStartDate(value);
-        } else {
-            setEndDate(value);
-        }
-
+    const handleStartDateChange = (value) => {
+        handleInputChange('startDate', value);
         if (validateDate(value) || value === '') {
             setError('');
-            handleInputChange(field, value);
+        } else {
+            setError('날짜 형식을 확인해 주세요.');
+        }
+    };
+
+    const handleEndDateChange = (value) => {
+        handleInputChange('endDate', value);
+        if (validateDate(value) || value === '') {
+            setError('');
         } else {
             setError('날짜 형식을 확인해 주세요.');
         }
     };
 
     const handleCheckboxChange = (event) => {
-        setIsChecked(event.target.checked);
-        if (event.target.checked) {
-            setEndDate('');
-            handleInputChange('endDate', '');
+        const checked = event.target.checked;
+        setIsChecked(checked);
+        onUpdate(index, 'isCurrent', checked);
+        if (checked) {
+            onUpdate(index, 'endDate', ''); // 현재 진행 중이라면 종료일 제거
         }
     };
 
@@ -101,25 +98,16 @@ const ActivityRecord = ({ index, activity, onRemove, onUpdate, resumeId }) => {
                     onChange={(e) => handleInputChange('organizationName', e.target.value)}
                 />
                 <div style={{ display: "flex", gap: 5, alignItems: "center", marginLeft: 5 }}>
-                    <Input
-                        style={{ width: 70 }}
-                        placeholder="YYYY.MM"
-                        value={startDate}
-                        onChange={(e) => handleDateChange('startDate', e.target.value)}
-                    />
+                    <Input style={{ width: 70 }} placeholder="YYYY.MM" value={activity.startDate} onChange={(e) => handleStartDateChange(e.target.value)} />
                     <span>-</span>
                     <Input
-                        style={{ width: 70, marginRight: 10 }}
-                        placeholder="YYYY.MM"
-                        value={endDate}
-                        onChange={(e) => handleDateChange('endDate', e.target.value)}
+                        style={{ width: 70 }}
+                        placeholder={isChecked ? "N/A" : "YYYY.MM"}
                         disabled={isChecked}
+                        value={isChecked ? "N/A" : activity.endDate}
+                        onChange={(e) => handleEndDateChange(e.target.value)}
                     />
-                    <CheckboxLabels
-                        option="진행 중"
-                        checked={isChecked}
-                        onChange={handleCheckboxChange}
-                    />
+                    <CheckboxLabels option={checkboxOption} checked={isChecked} onChange={handleCheckboxChange}></CheckboxLabels>
                     {error && <div style={{ fontSize: 13, color: 'rgba(202, 5, 5, 1)' }}>{error}</div>}
                 </div>
             </div>

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import SectionContainer from "../../ResumeCommon/SectionContainer";
+import SectionContainer from "../src/components/ResumeCommon/SectionContainer";
 import styled from 'styled-components';
-import blogIcon from '../../../assets/blog-icon.png';
-import githubIcon from '../../../assets/github-icon.png';
-import emailIcon from '../../../assets/email-icon.png';
-import phoneIcon from '../../../assets/phone-icon.png';
-import birthdayIcon from '../../../assets/birthday-icon.png';
-import FieldWithToggleButton from "./FieldWithToggleButton";
+import blogIcon from '../src/assets/blog-icon.png';
+import githubIcon from '../src/assets/github-icon.png';
+import emailIcon from '../src/assets/email-icon.png';
+import phoneIcon from '../src/assets/phone-icon.png';
+import birthdayIcon from '../src/assets/birthday-icon.png';
+import FieldWithToggleButton from "../src/components/ResumeForm/AboutMe/FieldWithToggleButton";
 
 const Input = styled.input`
     padding: 8px;
