@@ -8,6 +8,9 @@ import FormContent from "../../components/ResumeForm/FormContent";
 import { call } from "../../service/ApiService";
 import { kogptService } from "../../service/kogptService";
 import axios from "axios";
+import {TextField, Button, CircularProgress, Typography, Box, Paper, Collapse, IconButton} from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 // ResumePage.js: 이력서 작성 페이지(/resumes/{resumeId})를 구성, 데이터 불러오기, 저장하기 등의 기능을 담당
 
@@ -40,7 +43,7 @@ const Line = styled.div`
     background-color: rgba(0, 30, 89, 1);
 `;
 
-const Button = styled.button`
+const Button2 = styled.button`
     width: 90px;
     height: 40px;
     background-color: rgba(0, 69, 171, 1);
@@ -66,6 +69,16 @@ const ResumeTitle = styled.input`
     line-height: 1.5;
     box-sizing: border-box;
 `;
+
+const GptContainer = styled.div`
+    background-color: white;
+    width: 370px;
+    margin-left: 20px;
+    text-align: center;
+    margin-top: 30px;
+    padding: 10px;
+    border-radius: 20px;
+`
 
 function ResumePage({ baseUrl }) {
     const navigate = useNavigate();
@@ -142,6 +155,8 @@ function ResumePage({ baseUrl }) {
     const [generatedText, setGeneratedText] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
+    const [showPromptGuide, setShowPromptGuide] = useState(false);
+    const [guideText, setGuideText] = useState('');
 
     const generateText = async () => {
         setIsLoading(true);
@@ -162,6 +177,26 @@ function ResumePage({ baseUrl }) {
     };
 
 
+    const promptExamples = [
+        `KoGPT를 사용하여 경력 항목을 작성하려면 다음과 같은 프롬프트를 사용해 보세요:
+        "...(경력 요약)... 위와 같은 내용을 바탕으로 이전 직장에서 맡았던 역할과 주요 성과를 설명해 주세요."`,
+        `KoGPT를 사용하여 기술 항목을 작성하려면 다음과 같은 프롬프트를 사용해 보세요:
+        "...(기술 요약)... 위와 같은 내용을 바탕으로 보유한 기술과 사용 경험을 간략히 나열해 주세요."`,
+        `KoGPT를 사용하여 프로젝트 항목을 작성하려면 다음과 같은 프롬프트를 사용해 보세요:
+        "...(프로젝트 요약)... 위와 같은 내용을 바탕으로 참여한 프로젝트의 이름, 기간, 사용 기술, 그리고 나의 기여도를 설명해 주세요."`,
+        `KoGPT를 사용하여 수상 경력 항목을 작성하려면 다음과 같은 프롬프트를 사용해 보세요:
+        "...(수상 경력 요약)... 위와 같은 내용을 바탕으로 수상한 경력과 관련된 세부 사항을 제공해 주세요."`,
+        `KoGPT를 사용하여 [ ] 항목을 작성하려면 다음과 같은 프롬프트를 사용해 보세요:
+        "...([ ] 요약)... 위와 같은 내용을 바탕으로 [ ] 주세요."`
+    ];
+
+    const togglePromptGuide = () => {
+        setShowPromptGuide(!showPromptGuide);
+        if (!showPromptGuide) {
+            setGuideText(promptExamples[Math.floor(Math.random() * promptExamples.length)]);
+        }
+    };
+
     return (
         <div className="app">
             <div className="nav">
@@ -176,32 +211,63 @@ function ResumePage({ baseUrl }) {
                             <CategoryList onSectionChange={handleSectionChange}></CategoryList>
                         </CategoryContainer2>
                     </CategoryContainer>
-                    <div style={{width: 300, textAlign: 'center', marginLeft: 40, marginTop: 15}}>
-                        <input
-                            type="textarea"
-                            value={prompt}
-                            style={{width: 350, height: 30}}
-                            onChange={(e) => setPrompt(e.target.value)}
-                            placeholder="Enter your prompt here"
-                        />
-                        <input
-                            type="number"
-                            style={{width:60}}
-                            value={maxTokens}
-                            onChange={(e) => setMaxTokens(parseInt(e.target.value))}
-                            placeholder="Max Tokens"
-                        />
-                        <button onClick={generateText} disabled={isLoading}>
-                            {isLoading ? 'Loading...' : 'Generate Text'}
-                        </button>
-                        {generatedText && <p>Generated Text: {generatedText}</p>}
-                        {error && <p>Error: {error}</p>}
-                    </div>
+                    <GptContainer>
+                        <Box sx={{ width: 312, textAlign: 'center', marginLeft: 4, marginTop: 2 }}>
+                            <Box display="flex" justifyContent="center" alignItems="center" sx={{width:300, marginBottom: 1, marginLeft:1}}>
+                                <Typography variant="body1" sx={{ fontSize: 17, fontWeight: 'bold' }}>GPT 프롬프트 작성 가이드</Typography>
+                                <IconButton onClick={togglePromptGuide}>
+                                    {showPromptGuide ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                                </IconButton>
+                            </Box>
+                            <Collapse in={showPromptGuide}>
+                                <Paper elevation={3} sx={{ padding: 3, marginTop: 0, backgroundColor: '#F7F7F7', marginBottom:3 }}>
+                                    <Typography variant="body2">
+                                        {guideText}
+                                    </Typography>
+                                </Paper>
+                            </Collapse>
+                            <TextField
+                                variant="outlined"
+                                fullWidth
+                                multiline
+                                value={prompt}
+                                onChange={(e) => setPrompt(e.target.value)}
+                                placeholder="KoGPT에게 질문해보세요."
+                                sx={{ marginBottom: 2 , width: 255 }}
+                            />
+                            <TextField
+                                type="number"
+                                variant="outlined"
+                                value={maxTokens}
+                                onChange={(e) => setMaxTokens(parseInt(e.target.value))}
+                                placeholder="답변 길이 설정"
+                                sx={{ width: 150, marginBottom: 2 }}
+                            />
+                            <Button
+                                style={{marginLeft: 10, marginTop: 2}}
+                                variant="contained"
+                                color="primary"
+                                onClick={generateText}
+                                disabled={isLoading}
+                                sx={{ fontSize: 15, height: 50, backgroundColor: '#0033cc', color: '#fff', '&:hover': { backgroundColor: '#002bb8' } }}
+                            >
+                                {isLoading ? <CircularProgress size={24} /> : '답변 생성'}
+                            </Button>
+                            {generatedText && (
+                                <Paper elevation={3} sx={{ padding: 2, marginTop: 2, marginBottom: 2 }}>
+                                    <Typography variant="body1">{generatedText}</Typography>
+                                </Paper>
+                            )}
+                            {error && (
+                                <Typography variant="body1" color="error">{error}</Typography>
+                            )}
+                        </Box>
+                    </GptContainer>
                 </div>
                 <div className="form-container">
                     <div style={{marginTop: 25, marginRight: 25, display: "flex", justifyContent: 'end', gap: 10}}>
-                        <Button onClick={handleSave}>전체 저장</Button>
-                        <Button onClick={handlePrint}>PDF 인쇄</Button>
+                        <Button2 onClick={handleSave}>전체 저장</Button2>
+                        <Button2 onClick={handlePrint}>PDF 인쇄</Button2>
                     </div>
                     <div id="printContent" style={{width: '100%', padding: '20px', background: 'white'}}>
                         <div style={{display: 'flex', justifyContent: 'center', marginTop: 30, marginBottom: 10}}>
