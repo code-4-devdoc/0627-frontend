@@ -1,16 +1,18 @@
-import React, {useState} from 'react';
-import SectionContainer from "../../ResumeCommon/SectionContainer";
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import blogIcon from '../../../assets/blog-icon.png'
-import githubIcon from '../../../assets/github-icon.png'
-import emailIcon from '../../../assets/email-icon.png'
-import phoneIcon from '../../../assets/phone-icon.png'
-import birthdayIcon from '../../../assets/birthday-icon.png'
+import SectionContainer from "../../ResumeCommon/SectionContainer";
+import blogIcon from '../../../assets/blog-icon.png';
+import githubIcon from '../../../assets/github-icon.png';
+import emailIcon from '../../../assets/email-icon.png';
+import phoneIcon from '../../../assets/phone-icon.png';
+import birthdayIcon from '../../../assets/birthday-icon.png';
 import FieldWithToggleButton from "./FieldWithToggleButton";
+import { call } from "../../../service/ApiService";
 
 const Input = styled.input`
     padding: 8px;
-    margin-right: 8px; margin-bottom: 10px;
+    margin-right: 8px;
+    margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
     display: block;
@@ -18,19 +20,21 @@ const Input = styled.input`
 `;
 
 const Button = styled.button`
-    width: 25px; height: 25px;
+    width: 25px;
+    height: 25px;
     background-color: ${props => props.active ? 'rgba(175, 175, 175, 1)' : 'rgba(129, 172, 255, 1)'};
     color: white;
     border: none;
     border-radius: 50%;
     cursor: pointer;
-    margin-right: 10px; margin-top: 7px;
+    margin-right: 10px;
+    margin-top: 7px;
 `;
 
 const ImagePreview = styled.img`
-  width: 200px;
-  height: 200px;
-  object-fit: cover;
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
 `;
 
 const ImageContainer = styled.div`
@@ -43,7 +47,6 @@ const ImageContainer = styled.div`
     padding: 15px 0 15px 0;
 `;
 
-// 입력 검증 HOOK
 function useInputValidation(initialValue, pattern) {
     const [value, setValue] = useState(initialValue);
     const [isValid, setIsValid] = useState(true);
@@ -58,7 +61,42 @@ function useInputValidation(initialValue, pattern) {
     return { value, setValue, onChange, isValid, setIsValid };
 }
 
-const AboutMe = () => {
+const AboutMe = ({ aboutMe, setAboutMe, resumeId }) => {
+    const [imagePreviewUrl, setImagePreviewUrl] = useState(aboutMe?.photo || '');
+
+    useEffect(() => {
+        const fetchAboutMe = async () => {
+            try {
+                const response = await call(`/api/resumes/${resumeId}/aboutMes`, 'GET', null);
+                setAboutMe(response);
+            } catch (error) {
+                console.error("Failed to fetch aboutMe", error);
+            }
+        };
+
+        fetchAboutMe();
+    }, [resumeId, setAboutMe]);
+
+    const handleInputChange = (field, value) => {
+        setAboutMe(prev => ({
+            ...prev,
+            [field]: value
+        }));
+    };
+
+    const handleImageChange = (e) => {
+        e.preventDefault();
+
+        let reader = new FileReader();
+        let file = e.target.files[0];
+
+        reader.onloadend = () => {
+            setImagePreviewUrl(reader.result);
+            handleInputChange('photo', reader.result);
+        }
+
+        reader.readAsDataURL(file);
+    };
 
     const [isActive, setIsActive] = useState({
         phone: false,
@@ -69,58 +107,35 @@ const AboutMe = () => {
         birthday: false
     });
 
-    // 활성화 상태를 토글하는 함수
     const toggleActive = (field, input) => {
         setIsActive(prev => {
-            // 현재 필드의 활성화 상태를 토글
-            const newState = { ...prev, [field]: !prev[field] }; // field의 활성화 상태만 변경, 나머지는 그대로
+            const newState = { ...prev, [field]: !prev[field] };
 
-            // 비활성화하고 입력이 유효하지 않다면, 초기화
             if (prev[field] && !input.isValid) {
-                input.setValue("");  // 입력 초기화
-                input.setIsValid(true); // 검증 초기화
+                input.setValue("");
+                input.setIsValid(true);
             }
             return newState;
         });
     };
 
-    // 입력 검증
-    const phoneInput = useInputValidation("", /^\d{3}-\d{4}-\d{4}$/);
-    const emailInput = useInputValidation("", /^[a-zA-Z0-9.]+@[a-z]+\.[a-z]+$/);
-    //const birthdayInput = useInputValidation("", /^\d{4}-\d{2}-\d{2}$/);
-    const birthdayInput = useInputValidation("", /^\d{4}\.\d{2}\.\d{2}$/);
-    const githubInput = useInputValidation("", /^https:\/\/github\.com\/([a-zA-Z0-9_-]+\/?[a-zA-Z0-9_-]*\/?)*$/);
-    const blogInput = useInputValidation("", /^(https?:\/\/)?([\da-z\\.-]+)\.([a-z\\.]{2,6})([\\/\w \\.-]*)*\/?$/);
-    const introInput = useInputValidation("", /^[\s\S]*$/);
-
-    // 이미지 추가
-    const [image, setImage] = useState(null);
-    const [imagePreviewUrl, setImagePreviewUrl] = useState('');
-
-    // 이미지 변경 핸들러
-    const handleImageChange = (e) => {
-        e.preventDefault();
-
-        // 파일 읽기 작업
-        let reader = new FileReader();
-        let file = e.target.files[0];
-
-        // 파일 읽기 완료 시의 콜백 함수
-        reader.onloadend = () => {
-            // 상태 변수 업데이트
-            setImage(file);
-            setImagePreviewUrl(reader.result);
-        }
-
-        reader.readAsDataURL(file); // 파일을 브라우저에서 미리보기로 보여주는 역할
-    };
+    const phoneInput = useInputValidation(aboutMe?.phoneNumber || '', /^\d{3}-\d{4}-\d{4}$/);
+    const emailInput = useInputValidation(aboutMe?.email || '', /^[a-zA-Z0-9.]+@[a-z]+\.[a-z]+$/);
+    const birthdayInput = useInputValidation(aboutMe?.birthday || '', /^\d{4}\.\d{2}\.\d{2}$/);
+    const githubInput = useInputValidation(aboutMe?.github || '', /^https:\/\/github\.com\/([a-zA-Z0-9_-]+\/?[a-zA-Z0-9_-]*\/?)*$/);
+    const blogInput = useInputValidation(aboutMe?.blog || '', /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/);
+    const introInput = useInputValidation(aboutMe?.introduction || '', /^[\s\S]*$/);
 
     return (
         <SectionContainer title="About Me">
-
-            <div style={{display: "flex", paddingTop: 10}}>
+            <div style={{ display: "flex", paddingTop: 10 }}>
                 <div>
-                    <Input placeholder="이름" style={{marginLeft: 39}}/>
+                    <Input
+                        placeholder="이름"
+                        style={{ marginLeft: 39 }}
+                        value={aboutMe?.name || ''}
+                        onChange={(e) => handleInputChange('name', e.target.value)}
+                    />
 
                     <FieldWithToggleButton
                         icon={birthdayIcon}
@@ -130,6 +145,11 @@ const AboutMe = () => {
                         toggleActive={toggleActive}
                         fieldType="birthday"
                         errorMessage="날짜 형식을 확인해 주세요."
+                        value={birthdayInput.value}
+                        onChange={(e) => {
+                            birthdayInput.onChange(e);
+                            handleInputChange('birthday', e.target.value);
+                        }}
                     />
 
                     <FieldWithToggleButton
@@ -140,6 +160,11 @@ const AboutMe = () => {
                         toggleActive={toggleActive}
                         fieldType="phone"
                         errorMessage="전화번호 형식을 확인해 주세요."
+                        value={phoneInput.value}
+                        onChange={(e) => {
+                            phoneInput.onChange(e);
+                            handleInputChange('phoneNumber', e.target.value);
+                        }}
                     />
 
                     <FieldWithToggleButton
@@ -150,6 +175,11 @@ const AboutMe = () => {
                         toggleActive={toggleActive}
                         fieldType="email"
                         errorMessage="이메일 형식을 확인해 주세요."
+                        value={emailInput.value}
+                        onChange={(e) => {
+                            emailInput.onChange(e);
+                            handleInputChange('email', e.target.value);
+                        }}
                     />
 
                     <FieldWithToggleButton
@@ -160,6 +190,11 @@ const AboutMe = () => {
                         toggleActive={toggleActive}
                         fieldType="githubAddress"
                         errorMessage="깃허브 주소를 확인해 주세요."
+                        value={githubInput.value}
+                        onChange={(e) => {
+                            githubInput.onChange(e);
+                            handleInputChange('github', e.target.value);
+                        }}
                     />
 
                     <FieldWithToggleButton
@@ -170,25 +205,43 @@ const AboutMe = () => {
                         toggleActive={toggleActive}
                         fieldType="blogAddress"
                         errorMessage="블로그 주소를 확인해 주세요."
+                        value={blogInput.value}
+                        onChange={(e) => {
+                            blogInput.onChange(e);
+                            handleInputChange('blog', e.target.value);
+                        }}
                     />
                 </div>
                 <div>
-                    <ImageContainer style={{marginLeft: 60}}>
-                        <input style={{marginLeft: 55}} type="file" onChange={handleImageChange} accept="image/*"/>
-                        {/* imagePreviewUrl이 존재하면 */}
+                    <ImageContainer style={{ marginLeft: 60 }}>
+                        <input style={{ marginLeft: 55 }} type="file" onChange={handleImageChange} accept="image/*" />
                         {imagePreviewUrl && (
-                            <ImagePreview style={{marginTop: 10}} src={imagePreviewUrl} alt="Profile Image"/>
+                            <ImagePreview style={{ marginTop: 10 }} src={imagePreviewUrl} alt="Profile Image" />
                         )}
                     </ImageContainer>
                 </div>
             </div>
 
-            <div style={{display: "flex", marginLeft: 39}}>
+            <div style={{ display: "flex", marginLeft: 39 }}>
                 <div>
-                    <Input style={{width: 600, height: 60, fontFamily:"inherit"}} as="textarea" placeholder="자기소개를 입력하세요."
-                           disabled={!isActive.selfIntroduction} {...introInput} isValid={introInput.isValid}/>
-                    {(isActive.selfIntroduction && !introInput.isValid) &&
-                        <p style={{color: 'rgba(202, 5, 5, 1)', marginTop: -8, marginBottom: 7, fontSize: 13}}>입력을 확인해 주세요.</p>}
+                    <Input
+                        style={{ width: 600, height: 60, fontFamily: "inherit" }}
+                        as="textarea"
+                        placeholder="자기소개를 입력하세요."
+                        disabled={!isActive.selfIntroduction}
+                        {...introInput}
+                        value={aboutMe?.introduction || ''}
+                        onChange={(e) => {
+                            introInput.onChange(e);
+                            handleInputChange('introduction', e.target.value);
+                        }}
+                        isValid={introInput.isValid}
+                    />
+                    {(isActive.selfIntroduction && !introInput.isValid) && (
+                        <p style={{ color: 'rgba(202, 5, 5, 1)', marginTop: -8, marginBottom: 7, fontSize: 13 }}>
+                            입력을 확인해 주세요.
+                        </p>
+                    )}
                 </div>
                 <Button onClick={() => toggleActive('selfIntroduction', introInput)} active={isActive.selfIntroduction}>
                     {isActive.selfIntroduction ? '-' : '+'}

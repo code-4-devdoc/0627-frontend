@@ -66,12 +66,16 @@ function ResumePage({ baseUrl }) {
     const [careers, setCareers] = useState([]);
     const [projects, setProjects] = useState([]);
     const [certificates, setCertificates] = useState([]);
+    const [activities, setActivities] = useState([]);
+    const [trainings, setTrainings] = useState([]);
+    const [aboutMe, setAboutMe] = useState({});
+    const [educations, setEducations] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await call(`/api/resumes/${resumeId}`, "GET");
-                const { title, languages, awards, skills, careers, certificates, projects } = response;
+                const { title, languages, awards, skills, careers, certificates, projects, activities, trainings, aboutMe, educations } = response;
                 setResumeTitle(title || "");
                 setLanguages(languages || []);
                 setAwards(awards || []);
@@ -79,18 +83,22 @@ function ResumePage({ baseUrl }) {
                 setCareers(careers || []);
                 setProjects(projects || []);
                 setCertificates(certificates || []);
-                if (resumeId && response) {
-                    setActiveSections([
-                        ...(languages.length ? ['Language'] : []),
-                        ...(awards.length ? ['Award'] : []),
-                        ...(skills.length ? ['Skill'] : []),
-                        ...(careers.length ? ['Career'] : []),
-                        ...(projects.length ? ['Project'] : []),
-                        ...(certificates.length ? ['Certificate'] : [])
-                    ]);
-                } else {
-                    setActiveSections([]);
-                }
+                setActivities(activities || []);
+                setTrainings(trainings || []);
+                setAboutMe(aboutMe || {});
+                setEducations(educations || []);
+                setActiveSections([
+                    ...(languages.length ? ['Language'] : []),
+                    ...(awards.length ? ['Award'] : []),
+                    ...(skills.length ? ['Skill'] : []),
+                    ...(careers.length ? ['Career'] : []),
+                    ...(projects.length ? ['Project'] : []),
+                    ...(certificates.length ? ['Certificate'] : []),
+                    ...(activities.length ? ['Activity'] : []),
+                    ...(trainings.length ? ['Training'] : []),
+                    ...(aboutMe ? ['About Me'] : []),
+                    ...(educations.length ? ['Education'] : [])
+                ]);
             } catch (error) {
                 console.error("Failed to fetch resume data", error);
             }
@@ -115,7 +123,11 @@ function ResumePage({ baseUrl }) {
                 skills: skills,
                 careers: careers,
                 projects: projects,
-                certificates: certificates
+                certificates: certificates,
+                activities: activities,
+                trainings: trainings,
+                aboutMe: aboutMe,
+                educations: educations
             };
 
             await call(`/api/resumes/${resumeId}/save`, "POST", data);
@@ -164,6 +176,10 @@ function ResumePage({ baseUrl }) {
                             careers={careers} setCareers={setCareers}
                             projects={projects} setProjects={setProjects}
                             certificates={certificates} setCertificates={setCertificates}
+                            activities={activities} setActivities={setActivities}
+                            trainings={trainings} setTrainings={setTrainings}
+                            aboutMe={aboutMe} setAboutMe={setAboutMe}
+                            educations={educations} setEducations={setEducations}
                             resumeId={resumeId}
                             onRemoveBlankSection={handleRemoveBlankSection}
                         />

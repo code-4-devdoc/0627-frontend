@@ -1,7 +1,8 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import CheckboxLabels from "../../ResumeCommon/CheckboxLabels";
-import SkillSearchComponent from "../SearchSkills/SkillSearchComponent";
 import styled from "styled-components";
+import {call} from "../../../service/ApiService";
+import training from "./Training";
 
 const Border = styled.div`
     border-style: solid;
@@ -11,7 +12,7 @@ const Border = styled.div`
     margin-bottom: 10px;
     padding-left: 20px;
     padding-bottom: 20px;
-`
+`;
 
 const Input = styled.input`
     padding: 8px;
@@ -20,31 +21,58 @@ const Input = styled.input`
     font-size: 15px;
 `;
 
-const TrainingRecord = ({onRemove}) => {
-
-    const checkboxOption = "진행 중"
-    const [isChecked, setIsChecked] = useState(false);
-    const handleCheckboxChange = (event) => {
-        setIsChecked(event.target.checked);
-        if (event.target.checked) {
-            setEndDate('');  // 체크박스 선택시 endDate 초기화
-        }
-    };
-
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
+const TrainingRecord = ({index, training, onRemove, onUpdate, resumeId}) => {
+    const checkboxOption = "진행중";
+    const [isChecked, setIsChecked] = useState(training.isCurrent);
     const [error, setError] = useState('');
+
+    useEffect(() => {
+        setIsChecked(training.isCurrent);
+    }, [training.isCurrent]);
+
+
+    const handleInputChange = (field, value) => {
+        onUpdate(index, field, value);
+    };
 
     const validateDate = (date) => {
         return /^\d{4}\.\d{2}$/.test(date);
     };
 
-    const handleDateChange = (setDate, value) => {
-        setDate(value);
+    const handleStartDateChange = (value) => {
+        handleInputChange('startDate', value);
         if (validateDate(value) || value === '') {
             setError('');
         } else {
             setError('날짜 형식을 확인해 주세요.');
+        }
+    };
+
+    const handleEndDateChange = (value) => {
+        handleInputChange('endDate', value);
+        if (validateDate(value) || value === '') {
+            setError('');
+        } else {
+            setError('날짜 형식을 확인해 주세요.');
+        }
+    };
+
+    // 삭제 핸들러
+    const handleRemove = async () => {
+        try {
+            await call(`/api/resumes/${resumeId}/trainings/${training.id}`, "DELETE");
+            onRemove();
+        } catch (error) {
+            console.error("Failed to delete training data", error);
+        }
+    };
+
+    const handleCheckboxChange = (event) => {
+        const checked = event.target.checked;
+        setIsChecked(checked);
+        onUpdate(index, 'isCurrent', checked);
+        if (checked) {
+            onUpdate(index, 'endDate', ''); // 현재 진행 중이라면 종료일 제거
         }
     };
 
@@ -59,20 +87,32 @@ const TrainingRecord = ({onRemove}) => {
                     backgroundColor: "rgba(18, 73, 156, 50%)",
                     color: "white",
                     border: "none"
-                }} onClick={onRemove}>-
+                }} onClick={handleRemove}>-
                 </button>
             </div>
             <div style={{display: "flex", height: 35, alignItems: "center", marginTop: 5, gap: 5}}>
-                <Input style={{width: 150}} placeholder="교육명"/>
-                <Input style={{width: 150}} placeholder="교육 기관"/>
-                <div style={{display:"flex", gap:5, alignItems:"center", marginLeft: 5}}>
-                    <Input style={{width: 70}} placeholder="YYYY.MM" value={startDate}
-                           onChange={(e) => handleDateChange(setStartDate, e.target.value)}/>
+                <Input
+                    style={{width: 150}}
+                    placeholder="교육명"
+                    value={training.courseName}
+                    onChange={(e) => handleInputChange('courseName', e.target.value)}
+                />
+                <Input
+                    style={{width: 150}}
+                    placeholder="교육 기관"
+                    value={training.institution}
+                    onChange={(e) => handleInputChange('institution', e.target.value)}
+                />
+                <div style={{ display: "flex", gap: 5, alignItems: "center", marginLeft: 5 }}>
+                    <Input style={{width: 70}} placeholder="YYYY.MM" value={training.startDate}
+                           onChange={(e) => handleStartDateChange(e.target.value)}/>
                     <span>-</span>
-                    <Input style={{width: 70, marginRight: 10}} placeholder="YYYY.MM"
-                           value={endDate}
-                           onChange={(e) => handleDateChange(setEndDate, e.target.value)}
-                           disabled={isChecked}
+                    <Input
+                        style={{width: 70}}
+                        placeholder={isChecked ? "N/A" : "YYYY.MM"}
+                        disabled={isChecked}
+                        value={isChecked ? "N/A" : training.endDate}
+                        onChange={(e) => handleEndDateChange(e.target.value)}
                     />
                     <CheckboxLabels option={checkboxOption} checked={isChecked}
                                     onChange={handleCheckboxChange}></CheckboxLabels>

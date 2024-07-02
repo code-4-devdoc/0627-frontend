@@ -30,6 +30,10 @@ const CategoryList = ({ onSectionChange, activeSections }) => {
         if (sectionStates.includes(section)) {
             newSections = sectionStates.filter(item => item !== section);
         } else {
+            if (section === 'About Me' && sectionStates.includes('About Me')) {
+                alert('You can only add one About Me section.');
+                return;
+            }
             newSections = [...sectionStates, section];
         }
         setSectionStates(newSections);

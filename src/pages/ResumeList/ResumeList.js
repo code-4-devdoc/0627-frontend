@@ -2,8 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
 import styles from './ResumeList.module.css';
-// import { Tooltip } from "react-tooltip";
-// import infoIcon from "../../assets/info-icon.png"
+
 
 function ResumeList({ baseUrl }) {
   const [resumes, setResumes] = useState([]);

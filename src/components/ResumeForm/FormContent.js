@@ -5,10 +5,15 @@ import SkillSection from './Skill/SkillSection';
 import CareerSection from './Career/CareerSection';
 import ProjectSection from './Project/ProjectSection';
 import CertificateSection from "./Certificate/CertificateSection";
+import ActivitySection from "./Activity/ActivitySection";
+import TrainingSection from "./Training/TrainingSection";
+import AboutMeSection from "./AboutMe/AboutMeSection";
+import EducationSection from "./Education/EducationSection";
 import BlankSection from './Blank/BlankSection';
 
-
-const FormContent = ({ activeSections, languages, setLanguages, awards, setAwards, skills, setSkills, careers, setCareers, projects, setProjects, certificates, setCertificates, resumeId, onRemoveBlankSection }) => {
+const FormContent = ({ activeSections, languages, setLanguages, awards, setAwards, skills, setSkills, careers, setCareers,
+                         projects, setProjects, activities, setActivities, trainings, setTrainings, aboutMe, setAboutMe,
+                         educations, setEducations, certificates, setCertificates, resumeId, onRemoveBlankSection }) => {
     return (
         <div className="section-content">
             {activeSections.map((section, index) => {
@@ -47,6 +52,30 @@ const FormContent = ({ activeSections, languages, setLanguages, awards, setAward
                         return (
                             <div key={index} className="section-item">
                                 <CertificateSection certificates={certificates} setCertificates={setCertificates} resumeId={resumeId} />
+                            </div>
+                        );
+                    case 'Activity':
+                        return (
+                            <div key={index} className="section-item">
+                                <ActivitySection activities={activities} setActivities={setActivities} resumeId={resumeId} />
+                            </div>
+                        );
+                    case 'Training':
+                        return (
+                            <div key={index} className="section-item">
+                                <TrainingSection trainings={trainings} setTrainings={setTrainings} resumeId={resumeId} />
+                            </div>
+                        );
+                    case 'About Me':
+                        return (
+                            <div key={index} className="section-item">
+                                <AboutMeSection aboutMe={aboutMe} setAboutMe={setAboutMe} resumeId={resumeId} />
+                            </div>
+                        );
+                    case 'Education':
+                        return (
+                            <div key={index} className="section-item">
+                                <EducationSection educations={educations} setEducations={setEducations} resumeId={resumeId} />
                             </div>
                         );
                     case 'Blank':

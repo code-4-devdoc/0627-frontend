@@ -9,6 +9,9 @@ import Activity from "./Activity/Activity";
 import Award from "./Award/Award";
 import Skill from "./Skill/Skill";
 
+// Blank 추가?!
+
+
 const formSectionComponents = {
     'About Me': AboutMe,
     'Skill': Skill,
@@ -20,6 +23,7 @@ const formSectionComponents = {
     'Training': Training,
     'Language': Language,
     'Activity': Activity,
+
 };
 
 export default formSectionComponents;
