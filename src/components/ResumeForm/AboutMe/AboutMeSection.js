@@ -1,6 +1,6 @@
-import {useEffect} from "react";
-import {call} from "../../../service/ApiService";
+import React, { useEffect } from 'react';
 import AboutMe from "./AboutMe";
+import { call } from "../../../service/ApiService";
 
 const AboutMeSection = ({ aboutMes, setAboutMes, resumeId }) => {
     useEffect(() => {
