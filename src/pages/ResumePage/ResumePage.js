@@ -11,6 +11,7 @@ import axios from "axios";
 import {TextField, Button, CircularProgress, Typography, Box, Paper, Collapse, IconButton} from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import kakaoBrainLogo from '../../assets/kakaobrain-logo.png';
 
 // ResumePage.js: 이력서 작성 페이지(/resumes/{resumeId})를 구성, 데이터 불러오기, 저장하기 등의 기능을 담당
 
@@ -75,9 +76,12 @@ const GptContainer = styled.div`
     width: 370px;
     margin-left: 20px;
     text-align: center;
-    margin-top: 30px;
+    margin-top: 10px;
     padding: 10px;
     border-radius: 20px;
+    border-color: #FFECAD;
+    border-width: thick;
+    border-style: solid;
 `
 
 function ResumePage({ baseUrl }) {
@@ -212,15 +216,18 @@ function ResumePage({ baseUrl }) {
                         </CategoryContainer2>
                     </CategoryContainer>
                     <GptContainer>
+                        <div style={{marginTop: 20}}>
+                            <img style={{width: 100}} src={kakaoBrainLogo} alt="logo"/>
+                        </div>
                         <Box sx={{ width: 312, textAlign: 'center', marginLeft: 4, marginTop: 2 }}>
                             <Box display="flex" justifyContent="center" alignItems="center" sx={{width:300, marginBottom: 1, marginLeft:1}}>
-                                <Typography variant="body1" sx={{ fontSize: 17, fontWeight: 'bold' }}>GPT 프롬프트 작성 가이드</Typography>
+                                <Typography variant="body1" sx={{ fontSize: 17, fontWeight: 'bold' }}>질문 프롬프트 작성 가이드</Typography>
                                 <IconButton onClick={togglePromptGuide}>
                                     {showPromptGuide ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                                 </IconButton>
                             </Box>
                             <Collapse in={showPromptGuide}>
-                                <Paper elevation={3} sx={{ padding: 3, marginTop: 0, backgroundColor: '#F7F7F7', marginBottom:3 }}>
+                                <Paper elevation={1} sx={{ padding: 3, marginTop: 0, backgroundColor: '#FFFAEB', marginBottom:3 }}>
                                     <Typography variant="body2">
                                         {guideText}
                                     </Typography>
@@ -244,17 +251,17 @@ function ResumePage({ baseUrl }) {
                                 sx={{ width: 150, marginBottom: 2 }}
                             />
                             <Button
-                                style={{marginLeft: 10, marginTop: 2}}
+                                style={{marginLeft: 10, marginTop: 2, fontWeight:'bold'}}
                                 variant="contained"
                                 color="primary"
                                 onClick={generateText}
                                 disabled={isLoading}
-                                sx={{ fontSize: 15, height: 50, backgroundColor: '#0033cc', color: '#fff', '&:hover': { backgroundColor: '#002bb8' } }}
+                                sx={{ fontSize: 15, height: 50, backgroundColor: '#FFB900', color: '#fff', '&:hover': { backgroundColor: '#FFAA00' } }}
                             >
                                 {isLoading ? <CircularProgress size={24} /> : '답변 생성'}
                             </Button>
                             {generatedText && (
-                                <Paper elevation={3} sx={{ padding: 2, marginTop: 2, marginBottom: 2 }}>
+                                <Paper variant="outlined" elevation={3} sx={{ padding: 2, marginTop: 2, marginBottom: 2, borderColor:'#FFF0DE', borderWidth: 2, backgroundColor:'#FFF6EC' }}>
                                     <Typography variant="body1">{generatedText}</Typography>
                                 </Paper>
                             )}
