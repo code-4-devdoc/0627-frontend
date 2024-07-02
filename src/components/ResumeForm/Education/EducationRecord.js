@@ -2,6 +2,7 @@ import MenuListComposition from "../../ResumeCommon/MenuListComposition";
 import React, {useState} from "react";
 import styled from "styled-components";
 import UseRadioGroup from "../../ResumeCommon/UseRadioGroup";
+import {call} from "../../../service/ApiService";
 
 const Border = styled.div`
     border-style: solid;
@@ -21,7 +22,7 @@ const Input = styled.input`
     width: 150px;
 `;
 
-const EducationRecord = ({onRemove}) => {
+const EducationRecord = ({index, education, onRemove, onUpdate, resumeId}) => {
     const [selectedRadio, setSelectedRadio] = useState('first'); // 기본값 설정
     const menuItems1 = ["고등학교", "대학교 (2,3년)", "대학교 (4년)", "대학원 (석사)", "대학원 (박사)"];
 
@@ -34,20 +35,43 @@ const EducationRecord = ({onRemove}) => {
         setSelectedRadio(event.target.value);
     };
 
+    // 입력 값 변경 핸들러
+    const handleInputChange = (field, value) => {
+        onUpdate(index, field, value);
+    };
+
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [error, setError] = useState('');
 
+    // 날짜 형식 검증 함수
     const validateDate = (date) => {
         return /^\d{4}\.\d{2}$/.test(date);
     };
 
-    const handleDateChange = (setDate, value) => {
-        setDate(value);
+    // 날짜 입력 변경 핸들러
+    const handleDateChange = (field, value) => {
+        if (field === 'startDate') {
+            setStartDate(value);
+        } else {
+            setEndDate(value);
+        }
+
         if (validateDate(value) || value === '') {
             setError('');
+            handleInputChange(field, value);
         } else {
             setError('날짜 형식을 확인해 주세요.');
+        }
+    };
+
+    // 삭제 핸들러
+    const handleRemove = async () => {
+        try {
+            await call(`/api/resumes/${resumeId}/educations/${education.id}`, "DELETE");
+            onRemove();
+        } catch (error) {
+            console.error("Failed to delete language data", error);
         }
     };
 
@@ -62,21 +86,30 @@ const EducationRecord = ({onRemove}) => {
                     backgroundColor: "rgba(18, 73, 156, 50%)",
                     color: "white",
                     border: "none"
-                }} onClick={onRemove}>-
+                }} onClick={handleRemove}>-
                 </button>
             </div>
             <div style={{display: "flex", gap: 5}}>
                 <MenuListComposition menuTitle="학력 구분" menuItems={menuItems1}></MenuListComposition>
-                <Input placeholder="학교명"/>
-                <Input placeholder="전공"/>
+                <Input placeholder="학교명"
+                       value={education.schoolName}
+                       onChange={(e => handleInputChange('schoolName', e.target.value))}
+                />
+                <Input placeholder="전공"
+                       value={education.major}
+                       onChange={(e => handleInputChange('major', e.target.value))}
+                />
             </div>
             <div style={{display: "flex", gap: 5, alignItems: "center", marginTop: 5}}>
-                <Input style={{width: 70}} placeholder="YYYY.MM" value={startDate}
-                       onChange={(e) => handleDateChange(setStartDate, e.target.value)}/>
+                <Input style={{width: 70}}
+                       placeholder="YYYY.MM"
+                       value={startDate}
+                       onChange={(e) => handleDateChange('setStartDate', e.target.value)}/>
                 <span>-</span>
-                <Input style={{width: 70, marginRight:10}} placeholder="YYYY.MM"
+                <Input style={{width: 70, marginRight:10}}
+                       placeholder="YYYY.MM"
                        value={endDate}
-                       onChange={(e) => handleDateChange(setEndDate, e.target.value)}
+                       onChange={(e) => handleDateChange('setEndDate', e.target.value)}
                        disabled={selectedRadio === 'first'}/>
                 <UseRadioGroup options={radioOptions} value={selectedRadio} onChange={handleRadioChange}/>
             </div>
