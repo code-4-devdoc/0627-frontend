@@ -1,41 +1,22 @@
-import SectionContainer from "../../ResumeCommon/SectionContainer";
-import AddRecord from "../../ResumeCommon/AddRecord";
-import React from "react";
-import TrainingRecord from "./TrainingRecord";
+import React, {useEffect} from "react";
+import {call} from "../../../service/ApiService";
+import Training from "./Training";
 
-const TrainingSection = ({ educationCompletions, setEducationCompletions, resumeId }) => {
-    //직업훈련 추가 함수
-    const addTraining = () => {
-        setEducationCompletions([...educationCompletions,
-            {id: educationCompletions.length, courseName: '', institution: '', startDate: '', endDate: ''}]);
-    };
+const TrainingSection = ({ trainings, setTrainings, resumeId }) => {
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await call(`/api/resumes/${resumeId}/trainings`, 'GET', null);
+                setTrainings(response);
+            } catch (error) {
+                console.log("Failed to fetch activities", error);
+            }
+        };
 
-    //직업 훈련 제거 함수
-    const removeTraining = (index) => {
-        setEducationCompletions(educationCompletions.filter((_, idx) => idx !== index));
-    };
+        fetchData();
+    }, [resumeId, setTrainings]);
 
-    //직업 훈련 업데이트 함수
-    const updateTraining = (index, field, value) => {
-        setEducationCompletions(educationCompletions.map((edu, idx) => idx === index ? { ...edu, [field]: value } : edu));
-    };
-
-    return (
-        <SectionContainer title="Training">
-            {educationCompletions.map((edu, index) => (
-                <TrainingRecord
-                    key={index}
-                    index={index}
-                    educationCompletions={edu}
-                    onRemove={() => removeTraining(index)}
-                    onUpdate={updateTraining}
-                    resumeId={resumeId}
-                />
-            ))}
-            <div style={{ height: 10 }}></div>
-            <AddRecord fieldName="직업 훈련 이력" onClick={addTraining}></AddRecord>
-        </SectionContainer>
-    );
+    return <Training trainings={trainings} setTrainings={setTrainings} resumeId={resumeId} />;
 };
 
 export default TrainingSection;

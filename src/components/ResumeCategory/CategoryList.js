@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 
 // 섹션 목록 정의
 const sections = [
-    { name: 'About Me', detail: '프로필', isOpen: false },
+    { name: 'AboutMe', detail: '프로필', isOpen: false },
     { name: 'Skill', detail: '기술 스택', isOpen: false },
     { name: 'Education', detail: '학력', isOpen: false },
     { name: 'Career', detail: '경력', isOpen: false },

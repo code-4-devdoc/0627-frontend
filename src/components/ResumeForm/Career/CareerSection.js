@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import Career from './Career';
 import { call } from "../../../service/ApiService";
+import Career from "./Career";
 
 const CareerSection = ({ careers, setCareers, resumeId }) => {
     useEffect(() => {
@@ -16,7 +16,7 @@ const CareerSection = ({ careers, setCareers, resumeId }) => {
         fetchData();
     }, [resumeId, setCareers]);
 
-    return <Career careers={careers} setCareers={setCareers} resumeId={resumeId} />;
-};
+    return <Career careers={careers} setCareers={setCareers} resumeId={resumeId} />
+}
 
 export default CareerSection;
