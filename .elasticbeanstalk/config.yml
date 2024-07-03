@@ -1,6 +1,6 @@
 branch-defaults:
   elasticbeanstalk:
-    environment: null
+    environment: PROD-DEVDOC-UI-SERVICE
     group_suffix: null
 global:
   application_name: frontend-crud-deploy-and-add-certificate-skill-career-project
