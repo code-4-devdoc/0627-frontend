@@ -59,9 +59,6 @@ const ResumeTitle = styled.input`
     box-sizing: border-box;
 `;
 
-const Button = styled.button`
-    display: none;
-`;
 
 const GptContainer = styled.div`
     background-color: white;
