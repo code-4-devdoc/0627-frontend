@@ -129,6 +129,7 @@ function ResumePage({ baseUrl }) {
                 aboutMe: aboutMe,
                 educations: educations
             };
+            console.log(data)
 
             await call(`/api/resumes/${resumeId}/save`, "POST", data);
 

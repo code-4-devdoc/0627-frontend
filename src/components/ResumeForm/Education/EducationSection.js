@@ -18,7 +18,7 @@ const EducationSection = ({ educations, setEducations, resumeId }) => {
         fetchData();
     }, [resumeId, setEducations]);
 
-    return <Education educations={educations} setEducations={setEducations} />;
+    return <Education educations={educations} setEducations={setEducations} resumeId={resumeId} />;
 }
 
 export default EducationSection;
