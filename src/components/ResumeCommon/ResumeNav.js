@@ -28,19 +28,26 @@ const NavButton = styled.button`
     width: 100px;
     font-size: 18px;
     font-weight: bold;
+    color: white;
     padding: 10px;
-    border-radius: 5px 5px 0 0;
-    background-color: white;
-    color: rgba(0, 30, 89, 1);
+    // border-radius: 5px;
+    background-color: rgba(0, 30, 89, 1);
+    color: rgb(255, 255, 255);
     border-color: rgba(0, 30, 89, 1);
-    margin-left: 10px;
+    margin-left: 5px;
     cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+
     &:first-child {
         margin-left: 0;
     }
+
+    &:hover {
+        transform: translateY(-2px);
+    }
 `;
 
-const ResumeNav = ({ defaultActive }) => {
+const ResumeNav = ({ defaultActive, handleSave, handlePrint }) => {
     const [activeButton, setActiveButton] = useState(defaultActive);
     const navigate = useNavigate();
 
@@ -51,6 +58,10 @@ const ResumeNav = ({ defaultActive }) => {
         } else if (button === '로그아웃') {
             localStorage.removeItem("ACCESS_TOKEN"); // 토큰 삭제
             navigate("/login");
+        } else if (button === '전체 저장') {
+            handleSave();
+        } else if (button === 'PDF 인쇄') {
+            handlePrint();
         }
     };
 
@@ -58,8 +69,10 @@ const ResumeNav = ({ defaultActive }) => {
         <Container>
             <LogoLabel>DevDoc</LogoLabel>
             <div>
-                <NavButton onClick={() => handleButtonClick('목록')} active={activeButton === '목록'}>목록</NavButton>
                 <NavButton onClick={() => handleButtonClick('로그아웃')} active={activeButton === '로그아웃'}>로그아웃</NavButton>
+                <NavButton onClick={() => handleButtonClick('목록')} active={activeButton === '목록'}>목록</NavButton>
+                <NavButton onClick={() => handleButtonClick('전체 저장')} active={activeButton === '전체 저장'}>저장</NavButton>
+                <NavButton onClick={() => handleButtonClick('PDF 인쇄')} active={activeButton === 'PDF 인쇄'}>인쇄</NavButton>
             </div>
         </Container>
     );

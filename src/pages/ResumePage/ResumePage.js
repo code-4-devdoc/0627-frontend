@@ -10,7 +10,7 @@ import { call } from "../../service/ApiService";
 const CategoryContainer = styled.div`
     margin-left: 20px;
     width: 400px;
-    height: 600px;
+    height: 630px;
     background-color: rgba(0, 30, 89, 1);
 `;
 
@@ -36,22 +36,10 @@ const Line = styled.div`
     background-color: rgba(0, 30, 89, 1);
 `;
 
-const Button = styled.button`
-    width: 90px;
-    height: 40px;
-    background-color: rgba(0, 69, 171, 1);
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-`;
-
 const ResumeTitle = styled.input`
     display: flex;
     align-items: center;
-    width: 700px;
+    width: 740px;
     height: 40px;
     font-size: 20px;
     padding: 10px;
@@ -61,6 +49,10 @@ const ResumeTitle = styled.input`
     border-style: solid;
     line-height: 1.5;
     box-sizing: border-box;
+`;
+
+const Button = styled.button`
+    display: none;
 `;
 
 function ResumePage({ baseUrl }) {
@@ -103,11 +95,26 @@ function ResumePage({ baseUrl }) {
                 setCareers(careers || []);
                 setProjects(projects || []);
                 setCertificates(certificates || []);
+<<<<<<< HEAD
                 setActivities(activities || []);
                 setTrainings(trainings || []);
                 setAboutMes(aboutMes || []);
                 setEducations(educations || []);
                 setActiveSections(['Language', 'Award', 'Skill', 'Career', 'Project', 'Certificate', 'Activity', 'Training', 'AboutMe', 'Education']);  // 항상 섹션을 활성화
+=======
+                if (resumeId && response) {
+                    setActiveSections([
+                        ...(languages.length ? ['Language'] : []),
+                        ...(awards.length ? ['Award'] : []),
+                        ...(skills.length ? ['Skill'] : []),
+                        ...(careers.length ? ['Career'] : []),
+                        ...(projects.length ? ['Project'] : []),
+                        ...(certificates.length ? ['Certificate'] : [])
+                    ]);
+                } else {
+                    setActiveSections([]);
+                }
+>>>>>>> 4572ddda91c4f675b5390fe7135441028fd3be9f
             } catch (error) {
                 console.error("Failed to fetch resume data", error);
             }
@@ -116,7 +123,7 @@ function ResumePage({ baseUrl }) {
     }, [resumeId]);
 
     const handleSectionChange = (sections) => {
-        setActiveSections(sections);
+        setActiveSections(sections); // 기존 섹션을 유지하고 새로운 섹션 추가/제거
     };
 
     const handleTitleChange = (event) => {
@@ -132,11 +139,15 @@ function ResumePage({ baseUrl }) {
                 skills: skills,
                 careers: careers,
                 projects: projects,
+<<<<<<< HEAD
                 certificates: certificates,
                 activities: activities,
                 trainings: trainings,
                 aboutMes: aboutMes,
                 educations: educations
+=======
+                certificates: certificates
+>>>>>>> 4572ddda91c4f675b5390fe7135441028fd3be9f
             };
 
             console.log("Saving data: ", data);
@@ -155,10 +166,14 @@ function ResumePage({ baseUrl }) {
         window.print();
     };
 
+    const handleRemoveBlankSection = (index) => {
+        setActiveSections(prevSections => prevSections.filter((_, i) => i !== index));
+    };
+
     return (
         <div className="app">
             <div className="nav">
-                <ResumeNav defaultActive="작성" />
+                <ResumeNav defaultActive="작성" handleSave={handleSave} handlePrint={handlePrint} />
             </div>
             <div style={{ display: 'flex' }}>
                 <div className="category-container">
@@ -166,20 +181,17 @@ function ResumePage({ baseUrl }) {
                         <CategoryContainer2>
                             <Title>이력서 항목</Title>
                             <Line />
-                            <CategoryList onSectionChange={handleSectionChange}></CategoryList>
+                            <CategoryList onSectionChange={handleSectionChange} activeSections={activeSections}></CategoryList>
                         </CategoryContainer2>
                     </CategoryContainer>
                 </div>
                 <div className="form-container">
-                    <div style={{ marginTop: 25, marginRight: 25, display: "flex", justifyContent: 'end', gap: 10 }}>
-                        <Button onClick={handleSave}>전체 저장</Button>
-                        <Button onClick={handlePrint}>PDF 인쇄</Button>
-                    </div>
-                    <div id="printContent" style={{ width: '100%', padding: '20px', background: 'white' }}>
+                    <div id="printContent" style={{ width: '100%',  background: 'white', margin: '0 auto' }}>
                         <div style={{ display: 'flex', justifyContent: 'center', marginTop: 30, marginBottom: 10 }}>
                             <ResumeTitle type="text" value={resumeTitle} onChange={handleTitleChange}
                                          placeholder="이력서 제목 (저장용)" />
                         </div>
+<<<<<<< HEAD
                         <FormContent activeSections={activeSections}
                                      languages={languages} setLanguages={setLanguages}
                                      awards={awards} setAwards={setAwards}
@@ -192,6 +204,19 @@ function ResumePage({ baseUrl }) {
                                      aboutMes={aboutMes} setAboutMes={setAboutMes}
                                      educations={educations} setEducations={setEducations}
                                      resumeId={resumeId}
+=======
+                        <FormContent
+                            activeSections={activeSections}
+                            setActiveSections={setActiveSections}
+                            languages={languages} setLanguages={setLanguages}
+                            awards={awards} setAwards={setAwards}
+                            skills={skills} setSkills={setSkills}
+                            careers={careers} setCareers={setCareers}
+                            projects={projects} setProjects={setProjects}
+                            certificates={certificates} setCertificates={setCertificates}
+                            resumeId={resumeId}
+                            onRemoveBlankSection={handleRemoveBlankSection}
+>>>>>>> 4572ddda91c4f675b5390fe7135441028fd3be9f
                         />
                     </div>
                 </div>
@@ -200,4 +225,8 @@ function ResumePage({ baseUrl }) {
     );
 };
 
+<<<<<<< HEAD
 export default ResumePage;
+=======
+export default ResumePage;
+>>>>>>> 4572ddda91c4f675b5390fe7135441028fd3be9f
