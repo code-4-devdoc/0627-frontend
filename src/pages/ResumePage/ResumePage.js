@@ -93,8 +93,11 @@ function ResumePage({ baseUrl }) {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                console.log("Fetching resume data for ID:", resumeId);
                 const response = await call(`/api/resumes/${resumeId}`, "GET");
+                console.log("API Response:", response); // 응답 데이터 로그
                 const { title, languages, awards, skills, careers, certificates, projects, activities, trainings, aboutMe, educations } = response;
+                console.log("Title:", title); // 제목 로그
                 setResumeTitle(title || "");
                 setLanguages(languages || []);
                 setAwards(awards || []);
@@ -107,16 +110,16 @@ function ResumePage({ baseUrl }) {
                 setAboutMe(aboutMe || {});
                 setEducations(educations || []);
                 setActiveSections([
-                    ...(languages.length ? ['Language'] : []),
-                    ...(awards.length ? ['Award'] : []),
+                    ...(aboutMe ? ['About Me'] : []),
                     ...(skills.length ? ['Skill'] : []),
+                    ...(educations.length ? ['Education'] : []),
                     ...(careers.length ? ['Career'] : []),
                     ...(projects.length ? ['Project'] : []),
-                    ...(certificates.length ? ['Certificate'] : []),
-                    ...(activities.length ? ['Activity'] : []),
                     ...(trainings.length ? ['Training'] : []),
-                    ...(aboutMe ? ['About Me'] : []),
-                    ...(educations.length ? ['Education'] : [])
+                    ...(activities.length ? ['Activity'] : []),
+                    ...(awards.length ? ['Award'] : []),
+                    ...(certificates.length ? ['Certificate'] : []),
+                    ...(languages.length ? ['Language'] : []),
                 ]);
             } catch (error) {
                 console.error("Failed to fetch resume data", error);
@@ -291,21 +294,21 @@ function ResumePage({ baseUrl }) {
                 <div className="form-container">
                     <div id="printContent" style={{ width: '100%',  background: 'white', margin: '0 auto' }}>
                         <div style={{ display: 'flex', justifyContent: 'center', marginTop: 30, marginBottom: 10 }}>
-                            <ResumeTitle type="text" value={resumeTitle} onChange={handleTitleChange} placeholder="이력서 제목 (저장용)" />
+                            <ResumeTitle type="text" value={resumeTitle} onChange={handleTitleChange}/>
                         </div>
                         <FormContent
                             activeSections={activeSections}
                             setActiveSections={setActiveSections}
-                            languages={languages} setLanguages={setLanguages}
-                            awards={awards} setAwards={setAwards}
+                            aboutMe={aboutMe} setAboutMe={setAboutMe}
                             skills={skills} setSkills={setSkills}
+                            educations={educations} setEducations={setEducations}
                             careers={careers} setCareers={setCareers}
                             projects={projects} setProjects={setProjects}
-                            certificates={certificates} setCertificates={setCertificates}
-                            activities={activities} setActivities={setActivities}
                             trainings={trainings} setTrainings={setTrainings}
-                            aboutMe={aboutMe} setAboutMe={setAboutMe}
-                            educations={educations} setEducations={setEducations}
+                            activities={activities} setActivities={setActivities}
+                            awards={awards} setAwards={setAwards}
+                            certificates={certificates} setCertificates={setCertificates}
+                            languages={languages} setLanguages={setLanguages}
                             resumeId={resumeId}
                             onRemoveBlankSection={handleRemoveBlankSection}
                         />
