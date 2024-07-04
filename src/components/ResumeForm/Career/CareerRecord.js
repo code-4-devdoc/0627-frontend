@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, {useMemo, useState} from "react";
 import styled from "styled-components";
 import CheckboxLabels from "../../ResumeCommon/CheckboxLabels";
 import SkillSearchComponent from "../SearchSkills/SkillSearchComponent";
 import { call } from "../../../service/ApiService";
+import ReactQuill, { Quill } from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const Border = styled.div`
     border-style: solid;
@@ -12,6 +14,7 @@ const Border = styled.div`
     margin-bottom: 10px;
     padding-left: 20px;
     padding-bottom: 20px;
+    height: 250px;
 `;
 
 const Input = styled.input`
@@ -22,7 +25,27 @@ const Input = styled.input`
     width: 150px;
 `;
 
-const CareerRecord = ({ index, career, onRemove, onUpdate, resumeId }) => {
+
+const formats = [
+    'font',
+    'header',
+    'bold',
+    'italic',
+    'underline',
+    'strike',
+    'blockquote',
+    'list',
+    'bullet',
+    'indent',
+    'link',
+    'align',
+    'color',
+    'background',
+    'size',
+    'h1',
+];
+
+const CareerRecord = ({ body, setBody, index, career, onRemove, onUpdate, resumeId }) => {
     const checkboxOption = "재직";
     const [isChecked, setIsChecked] = useState(career.isCurrent);
 
@@ -72,6 +95,25 @@ const CareerRecord = ({ index, career, onRemove, onUpdate, resumeId }) => {
         }
     };
 
+    const modules = useMemo(() => {
+        return {
+            toolbar: {
+                container: [
+                    [{ size: ['small', false, 'large', 'huge'] }],
+                    [{ align: [] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ list: 'ordered' }, { list: 'bullet' }],
+                    [
+                        {
+                            color: [],
+                        },
+                        { background: [] },
+                    ],
+                ],
+            },
+        };
+    }, []);
+
     return (
         <Border>
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -104,16 +146,25 @@ const CareerRecord = ({ index, career, onRemove, onUpdate, resumeId }) => {
             </div>
             {error && <div style={{ fontSize: 13, color: 'rgba(202, 5, 5, 1)' }}>{error}</div>}
             <div style={{ height: 5 }}></div>
-            <SkillSearchComponent 
-                    singleSelection={true}
-                    selectedSkills={career.techStack || ""}
-                    onSkillChange={(careers) => handleInputChange('techStack', careers)}
-                />
-            <Input as="textarea"
-                style={{ marginTop: 5, width: 620, height: 60, fontFamily: "inherit" }}
-                placeholder="업무 내용 또는 성과를 입력하세요."
+            <SkillSearchComponent
+                singleSelection={true}
+                selectedSkills={career.techStack || ""}
+                onSkillChange={(careers) => handleInputChange('techStack', careers)}
+            />
+            <div style={{ height: 5 }}></div>
+            {/*<Input as="textarea"*/}
+            {/*    style={{ marginTop: 5, width: 620, height: 60, fontFamily: "inherit" }}*/}
+            {/*    placeholder="업무 내용 또는 성과를 입력하세요."*/}
+            {/*    value={career.description}*/}
+            {/*    onChange={(e) => onUpdate(index, 'description', e.target.value)}*/}
+            {/*/>*/}
+            <ReactQuill
+                theme="snow"
+                modules={modules}
+                formats={formats}
+                style={{width: 640, height:60}}
+                onChange={(content) => onUpdate(index, 'description', content)}
                 value={career.description}
-                onChange={(e) => onUpdate(index, 'description', e.target.value)}
             />
         </Border>
     );

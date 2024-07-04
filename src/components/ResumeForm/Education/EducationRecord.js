@@ -1,6 +1,6 @@
-import MenuListComposition from "../../ResumeCommon/MenuListComposition";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import MenuListComposition from "../../ResumeCommon/MenuListComposition";
 import UseRadioGroup from "../../ResumeCommon/UseRadioGroup";
 import { call } from "../../../service/ApiService";
 
@@ -26,11 +26,16 @@ const EducationRecord = ({ index, education, onRemove, onUpdate, resumeId }) => 
     const [selectedRadio, setSelectedRadio] = useState(education.status);
     const [selectedEducationType, setSelectedEducationType] = useState(education.educationType || "");
     const menuItems1 = ["고등학교", "대학교 (2,3년)", "대학교 (4년)", "대학원 (석사)", "대학원 (박사)"];
+    const [error, setError] = useState('');
 
     useEffect(() => {
         setSelectedRadio(education.status);
         setSelectedEducationType(education.educationType || "");
     }, [education.status, education.educationType]);
+
+    useEffect(() => {
+        handleInputChange('educationType', selectedEducationType);
+    }, [selectedEducationType]);
 
     const radioOptions = [
         { value: 'first', label: '재학' },
@@ -47,8 +52,6 @@ const EducationRecord = ({ index, education, onRemove, onUpdate, resumeId }) => 
     const handleInputChange = (field, value) => {
         onUpdate(index, field, value);
     };
-
-    const [error, setError] = useState('');
 
     const validateDate = (date) => {
         return /^\d{4}\.\d{2}$/.test(date);
@@ -101,7 +104,12 @@ const EducationRecord = ({ index, education, onRemove, onUpdate, resumeId }) => 
                 </button>
             </div>
             <div style={{ display: "flex", gap: 5 }}>
-                <MenuListComposition menuTitle="학력 구분" menuItems={menuItems1} onSelect={handleMenuSelect} selected={selectedEducationType} />
+                <MenuListComposition
+                    menuTitle="학력 구분"
+                    menuItems={menuItems1}
+                    onSelect={handleMenuSelect}
+                    selected={selectedEducationType}
+                />
                 <Input placeholder="학교명"
                        value={education.schoolName}
                        onChange={(e => handleInputChange('schoolName', e.target.value))}

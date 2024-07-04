@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, {useMemo, useState} from 'react';
 import styled from "styled-components";
 import { call } from "../../../service/ApiService";
+import ReactQuill from "react-quill";
 
 const Border = styled.div`
     border-style: solid;
@@ -10,6 +11,7 @@ const Border = styled.div`
     margin-bottom: 10px;
     padding-left: 20px;
     padding-bottom: 20px;
+    height: 170px;
 `;
 
 const Input = styled.input`
@@ -18,6 +20,25 @@ const Input = styled.input`
     border-radius: 4px;
     font-size: 15px;
 `;
+
+const formats = [
+    'font',
+    'header',
+    'bold',
+    'italic',
+    'underline',
+    'strike',
+    'blockquote',
+    'list',
+    'bullet',
+    'indent',
+    'link',
+    'align',
+    'color',
+    'background',
+    'size',
+    'h1',
+];
 
 const AwardRecord = ({ index, award, onRemove, onUpdate, resumeId }) => {
     const [error, setError] = useState('');
@@ -48,6 +69,25 @@ const AwardRecord = ({ index, award, onRemove, onUpdate, resumeId }) => {
         }
     };
 
+    const modules = useMemo(() => {
+        return {
+            toolbar: {
+                container: [
+                    [{ size: ['small', false, 'large', 'huge'] }],
+                    [{ align: [] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ list: 'ordered' }, { list: 'bullet' }],
+                    [
+                        {
+                            color: [],
+                        },
+                        { background: [] },
+                    ],
+                ],
+            },
+        };
+    }, []);
+
     return (
         <Border>
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -70,14 +110,23 @@ const AwardRecord = ({ index, award, onRemove, onUpdate, resumeId }) => {
                     {error && <div style={{ fontSize: 13, color: 'rgba(202, 5, 5, 1)' }}>{error}</div>}
                 </div>
             </div>
-            <div style={{ display: "flex", marginTop: 5 }}>
-                <Input as="textarea"
-                       style={{ width: 590, height: 50, fontFamily: "inherit" }}
-                       placeholder="부연 설명을 입력하세요."
-                       value={award.description}
-                       onChange={(e) => handleInputChange('description', e.target.value)}
-                />
+            <div style={{ marginTop: 5 }}>
+                {/*<Input as="textarea"*/}
+                {/*       style={{ width: 590, height: 50, fontFamily: "inherit" }}*/}
+                {/*       placeholder="부연 설명을 입력하세요."*/}
+                {/*       value={award.description}*/}
+                {/*       onChange={(e) => handleInputChange('description', e.target.value)}*/}
+                {/*/>*/}
             </div>
+            <ReactQuill
+                theme="snow"
+                modules={modules}
+                formats={formats}
+                style={{width: 640, height:60}}
+                onChange={(content) => onUpdate(index, 'description', content)}
+                value={award.description}
+            />
+            <div></div>
         </Border>
     );
 };

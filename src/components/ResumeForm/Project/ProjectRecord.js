@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, {useMemo, useState} from "react";
 import styled from "styled-components";
 import CheckboxLabels from "../../ResumeCommon/CheckboxLabels";
 import SkillSearchComponent from "../SearchSkills/SkillSearchComponent";
 import { call } from "../../../service/ApiService";
+import ReactQuill from "react-quill";
 
 const Border = styled.div`
     border-style: solid;
@@ -12,6 +13,7 @@ const Border = styled.div`
     margin-bottom: 10px;
     padding-left: 20px;
     padding-bottom: 20px;
+    height: 260px;
 `;
 
 const Input = styled.input`
@@ -20,6 +22,25 @@ const Input = styled.input`
     border-radius: 4px;
     font-size: 15px;
 `;
+
+const formats = [
+    'font',
+    'header',
+    'bold',
+    'italic',
+    'underline',
+    'strike',
+    'blockquote',
+    'list',
+    'bullet',
+    'indent',
+    'link',
+    'align',
+    'color',
+    'background',
+    'size',
+    'h1',
+];
 
 const ProjectRecord = ({ index, project, onRemove, onUpdate, resumeId }) => {
     const checkboxOption = "진행 중";
@@ -71,6 +92,25 @@ const ProjectRecord = ({ index, project, onRemove, onUpdate, resumeId }) => {
         }
     };
 
+    const modules = useMemo(() => {
+        return {
+            toolbar: {
+                container: [
+                    [{ size: ['small', false, 'large', 'huge'] }],
+                    [{ align: [] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ list: 'ordered' }, { list: 'bullet' }],
+                    [
+                        {
+                            color: [],
+                        },
+                        { background: [] },
+                    ],
+                ],
+            },
+        };
+    }, []);
+
     return (
         <Border>
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -101,16 +141,25 @@ const ProjectRecord = ({ index, project, onRemove, onUpdate, resumeId }) => {
             {error && <div style={{ fontSize: 13, color: 'rgba(202, 5, 5, 1)' }}>{error}</div>}
             <Input style={{ width: 620, marginTop: 5 }} placeholder="프로젝트 소개" value={project.intro} onChange={(e) => onUpdate(index, 'intro', e.target.value)} />
             <div style={{ height: 5 }}></div>
-            <SkillSearchComponent 
-                    singleSelection={true}
-                    selectedSkills={project.techStack || ""}
-                    onSkillChange={(projects) => handleInputChange('techStack', projects)}
-                />
-            <Input as="textarea"
-                style={{ marginTop: 5, width: 620, height: 60, fontFamily: "inherit" }}
-                placeholder="부연 설명을 입력하세요."
+            <SkillSearchComponent
+                singleSelection={true}
+                selectedSkills={project.techStack || ""}
+                onSkillChange={(projects) => handleInputChange('techStack', projects)}
+            />
+            {/*<Input as="textarea"*/}
+            {/*    style={{ marginTop: 5, width: 620, height: 60, fontFamily: "inherit" }}*/}
+            {/*    placeholder="부연 설명을 입력하세요."*/}
+            {/*    value={project.description}*/}
+            {/*    onChange={(e) => onUpdate(index, 'description', e.target.value)}*/}
+            {/*/>*/}
+            <div style={{height: 5}}></div>
+            <ReactQuill
+                theme="snow"
+                modules={modules}
+                formats={formats}
+                style={{width: 640, height:60}}
+                onChange={(content) => onUpdate(index, 'description', content)}
                 value={project.description}
-                onChange={(e) => onUpdate(index, 'description', e.target.value)}
             />
         </Border>
     );
