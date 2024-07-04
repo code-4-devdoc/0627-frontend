@@ -7,10 +7,10 @@ import MenuItem from '@mui/material/MenuItem';
 import MenuList from '@mui/material/MenuList';
 import Stack from '@mui/material/Stack';
 
-const MenuListComposition = ({menuTitle, menuItems}) => {
+const MenuListComposition = ({ menuTitle, menuItems, onSelect, selected }) => {
     const [open, setOpen] = React.useState(false);
     const anchorRef = React.useRef(null);
-    const [selectedTitle, setSelectedTitle] = React.useState(menuTitle);
+    const [selectedTitle, setSelectedTitle] = React.useState(selected || menuTitle);
 
     const handleToggle = () => {
         setOpen((prevOpen) => !prevOpen);
@@ -20,7 +20,6 @@ const MenuListComposition = ({menuTitle, menuItems}) => {
         if (anchorRef.current && anchorRef.current.contains(event.target)) {
             return;
         }
-
         setOpen(false);
     };
 
@@ -34,24 +33,27 @@ const MenuListComposition = ({menuTitle, menuItems}) => {
     }
 
     const handleMenuItemClick = (event, item) => {
-        setSelectedTitle(item); // 선택된 메뉴 아이템으로 타이틀 업데이트
-        handleClose(event); // 메뉴 닫기
+        onSelect(item); // 선택된 메뉴 아이템을 부모 컴포넌트로 전달
+        setSelectedTitle(item);
+        handleClose(event);
     };
 
-    // return focus to the button when we transitioned from !open -> open
     const prevOpen = React.useRef(open);
     React.useEffect(() => {
         if (prevOpen.current === true && open === false) {
             anchorRef.current.focus();
         }
-
         prevOpen.current = open;
     }, [open]);
 
+    React.useEffect(() => {
+        setSelectedTitle(selected || menuTitle);
+    }, [selected, menuTitle]);
+
     return (
         <Stack direction="row" spacing={2}>
-            <div style={{borderStyle:"solid", borderWidth:1, borderColor: "#ccc", borderRadius: 4, padding: 7}}>
-                <div style={{display:"flex", justifyContent:"space-between", gap: 5}}>
+            <div style={{ borderStyle: "solid", borderWidth: 1, borderColor: "#ccc", borderRadius: 4, padding: 7 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", gap: 5 }}>
                     <span>{selectedTitle}</span>
                     <button
                         ref={anchorRef}
@@ -60,7 +62,7 @@ const MenuListComposition = ({menuTitle, menuItems}) => {
                         aria-expanded={open ? 'true' : undefined}
                         aria-haspopup="true"
                         onClick={handleToggle}
-                        style={{backgroundColor:"grey", color:"white", border:"none", borderRadius:7, width: 20, cursor:"pointer"}}
+                        style={{ backgroundColor: "grey", color: "white", border: "none", borderRadius: 7, width: 20, cursor: "pointer" }}
                     >
                         v
                     </button>
@@ -73,7 +75,7 @@ const MenuListComposition = ({menuTitle, menuItems}) => {
                     transition
                     disablePortal
                 >
-                    {({TransitionProps, placement}) => (
+                    {({ TransitionProps, placement }) => (
                         <Grow
                             {...TransitionProps}
                             style={{
