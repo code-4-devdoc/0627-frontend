@@ -6,13 +6,14 @@ import styled from "styled-components";
 import CategoryList from "../../components/ResumeCategory/CategoryList";
 import FormContent from "../../components/ResumeForm/FormContent";
 import { call } from "../../service/ApiService";
-
 import { kogptService } from "../../service/kogptService";
 import axios from "axios";
 import {TextField, Button, CircularProgress, Typography, Box, Paper, Collapse, IconButton} from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import kakaoBrainLogo from '../../assets/kakaobrain-logo.png';
+
+// ResumePage.js: 이력서 작성 페이지(/resumes/{resumeId})를 구성, 데이터 불러오기, 저장하기 등의 기능을 담당
 
 const CategoryContainer = styled.div`
     margin-left: 20px;
@@ -58,6 +59,7 @@ const ResumeTitle = styled.input`
     box-sizing: border-box;
 `;
 
+
 const GptContainer = styled.div`
     background-color: white;
     width: 370px;
@@ -70,7 +72,6 @@ const GptContainer = styled.div`
     border-width: thick;
     border-style: solid;
 `
-
 
 function ResumePage({ baseUrl }) {
     const navigate = useNavigate();
@@ -88,11 +89,15 @@ function ResumePage({ baseUrl }) {
     const [aboutMe, setAboutMe] = useState({});
     const [educations, setEducations] = useState([]);
 
+    // 데이터 불러오기
     useEffect(() => {
         const fetchData = async () => {
             try {
+                console.log("Fetching resume data for ID:", resumeId);
                 const response = await call(`/api/resumes/${resumeId}`, "GET");
+                console.log("API Response:", response); // 응답 데이터 로그
                 const { title, languages, awards, skills, careers, certificates, projects, activities, trainings, aboutMe, educations } = response;
+                console.log("Title:", title); // 제목 로그
                 setResumeTitle(title || "");
                 setLanguages(languages || []);
                 setAwards(awards || []);
@@ -105,16 +110,16 @@ function ResumePage({ baseUrl }) {
                 setAboutMe(aboutMe || {});
                 setEducations(educations || []);
                 setActiveSections([
-                    ...(languages.length ? ['Language'] : []),
-                    ...(awards.length ? ['Award'] : []),
+                    ...(aboutMe ? ['About Me'] : []),
                     ...(skills.length ? ['Skill'] : []),
+                    ...(educations.length ? ['Education'] : []),
                     ...(careers.length ? ['Career'] : []),
                     ...(projects.length ? ['Project'] : []),
-                    ...(certificates.length ? ['Certificate'] : []),
-                    ...(activities.length ? ['Activity'] : []),
                     ...(trainings.length ? ['Training'] : []),
-                    ...(aboutMe ? ['About Me'] : []),
-                    ...(educations.length ? ['Education'] : [])
+                    ...(activities.length ? ['Activity'] : []),
+                    ...(awards.length ? ['Award'] : []),
+                    ...(certificates.length ? ['Certificate'] : []),
+                    ...(languages.length ? ['Language'] : []),
                 ]);
             } catch (error) {
                 console.error("Failed to fetch resume data", error);
@@ -123,14 +128,17 @@ function ResumePage({ baseUrl }) {
         fetchData();
     }, [resumeId]);
 
+    // 항목 변경
     const handleSectionChange = (sections) => {
         setActiveSections(sections); // 기존 섹션을 유지하고 새로운 섹션 추가/제거
     };
 
+    // 제목 변경
     const handleTitleChange = (event) => {
         setResumeTitle(event.target.value);
     };
 
+    // 전체 저장
     const handleSave = async () => {
         try {
             const data = {
@@ -156,6 +164,7 @@ function ResumePage({ baseUrl }) {
         }
     };
 
+    // PDF 인쇄, 저장, 미리보기
     const handlePrint = () => {
         window.print();
     };
@@ -284,21 +293,21 @@ function ResumePage({ baseUrl }) {
                 <div className="form-container">
                     <div id="printContent" style={{ width: '100%',  background: 'white', margin: '0 auto' }}>
                         <div style={{ display: 'flex', justifyContent: 'center', marginTop: 30, marginBottom: 10 }}>
-                            <ResumeTitle type="text" value={resumeTitle} onChange={handleTitleChange} placeholder="이력서 제목 (저장용)" />
+                            <ResumeTitle type="text" value={resumeTitle} onChange={handleTitleChange} placeholder="이력서의 제목을 입력하세요."/>
                         </div>
                         <FormContent
                             activeSections={activeSections}
                             setActiveSections={setActiveSections}
-                            languages={languages} setLanguages={setLanguages}
-                            awards={awards} setAwards={setAwards}
+                            aboutMe={aboutMe} setAboutMe={setAboutMe}
                             skills={skills} setSkills={setSkills}
+                            educations={educations} setEducations={setEducations}
                             careers={careers} setCareers={setCareers}
                             projects={projects} setProjects={setProjects}
-                            certificates={certificates} setCertificates={setCertificates}
-                            activities={activities} setActivities={setActivities}
                             trainings={trainings} setTrainings={setTrainings}
-                            aboutMe={aboutMe} setAboutMe={setAboutMe}
-                            educations={educations} setEducations={setEducations}
+                            activities={activities} setActivities={setActivities}
+                            awards={awards} setAwards={setAwards}
+                            certificates={certificates} setCertificates={setCertificates}
+                            languages={languages} setLanguages={setLanguages}
                             resumeId={resumeId}
                             onRemoveBlankSection={handleRemoveBlankSection}
                         />
@@ -307,6 +316,6 @@ function ResumePage({ baseUrl }) {
             </div>
         </div>
     );
-};
+}
 
 export default ResumePage;
