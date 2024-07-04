@@ -27,25 +27,26 @@ export function call(api, method, request, authRequired = true) {
     options.body = JSON.stringify(request); // 요청 본문 설정
   }
 
-  console.log('Sending request to:', options.url);
+  console.log('Sending request to:', options.url, 'with options:', options);
 
   return fetch(options.url, options)
-    .then((response) =>
-      response.text().then((text) => {
-        console.log("Response Text:", text);
-        if (!response.ok) {
-          return Promise.reject(text);
-        }
-        return text ? JSON.parse(text) : {}; // JSON 응답이 비어있을 경우 처리
+      .then((response) => {
+
+        return response.text().then((text) => {
+          console.log("Response Text:", text); // 응답 텍스트 로그
+          if (!response.ok) {
+            return Promise.reject(text);
+          }
+          return text ? JSON.parse(text) : {}; // JSON 응답이 비어있을 경우 처리
+        });
       })
-    )
-    .catch((error) => {
-      console.error("Fetch error:", error);
-      if (error.status === 403) {
-        window.location.href = "/login";
-      }
-      return Promise.reject(error);
-    });
+      .catch((error) => {
+        console.error("Fetch error:", error); // 에러 로그
+        if (error.status === 403) {
+          window.location.href = "/login";
+        }
+        return Promise.reject(error);
+      });
 }
 
 // 로그인 처리 함수
