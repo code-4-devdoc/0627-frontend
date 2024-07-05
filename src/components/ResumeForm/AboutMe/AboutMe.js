@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import styled, {createGlobalStyle} from 'styled-components';
 import SectionContainer from "../../ResumeCommon/SectionContainer";
 import blogIcon from '../../../assets/blog-icon.png';
 import githubIcon from '../../../assets/github-icon.png';
@@ -8,6 +8,17 @@ import phoneIcon from '../../../assets/phone-icon.png';
 import birthdayIcon from '../../../assets/birthday-icon.png';
 import FieldWithToggleButton from "./FieldWithToggleButton";
 import { call } from "../../../service/ApiService";
+
+const GlobalStyle = createGlobalStyle`
+    @media print {
+      .toggle-button, .image-input-btn {
+          display: none;
+      }  
+      .image-preview {
+          display: block !important; /* Ensure image-preview is visible */
+       }
+    }
+`;
 
 const Input = styled.input`
     padding: 8px;
@@ -127,6 +138,8 @@ const AboutMe = ({ aboutMe, setAboutMe, resumeId }) => {
     const introInput = useInputValidation(aboutMe?.introduction || '', /^[\s\S]*$/);
 
     return (
+        <>
+            <GlobalStyle/>
         <SectionContainer title="About Me">
             <div style={{ display: "flex", paddingTop: 10 }}>
                 <div>
@@ -213,10 +226,10 @@ const AboutMe = ({ aboutMe, setAboutMe, resumeId }) => {
                     />
                 </div>
                 <div>
-                    <ImageContainer style={{ marginLeft: 60 }}>
-                        <input style={{ marginLeft: 55 }} type="file" onChange={handleImageChange} accept="image/*" />
+                    <ImageContainer className="image-container" style={{ marginLeft: 60 }}>
+                        <input className="image-input-btn" style={{ marginLeft: 55 }} type="file" onChange={handleImageChange} accept="image/*" />
                         {imagePreviewUrl && (
-                            <ImagePreview style={{ marginTop: 10 }} src={imagePreviewUrl} alt="Profile Image" />
+                            <ImagePreview className="image-preview" style={{ marginTop: 10 }} src={imagePreviewUrl} alt="Profile Image" />
                         )}
                     </ImageContainer>
                 </div>
@@ -243,11 +256,12 @@ const AboutMe = ({ aboutMe, setAboutMe, resumeId }) => {
                         </p>
                     )}
                 </div>
-                <Button onClick={() => toggleActive('selfIntroduction', introInput)} active={isActive.selfIntroduction}>
+                <Button className="toggle-button" onClick={() => toggleActive('selfIntroduction', introInput)} active={isActive.selfIntroduction}>
                     {isActive.selfIntroduction ? '-' : '+'}
                 </Button>
             </div>
         </SectionContainer>
+        </>
     );
 };
 

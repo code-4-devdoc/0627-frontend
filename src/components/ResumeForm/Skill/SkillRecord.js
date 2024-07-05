@@ -100,18 +100,10 @@ const SkillRecord = ({ index, skill, onRemove, onUpdate, resumeId }) => {
                     selectedSkills={skill.techStack || ""}
                     onSkillChange={(skills) => handleInputChange('techStack', skills)}
                 />
-                {/*<Input*/}
-                {/*    placeholder="부연 설명을 입력하세요."*/}
-                {/*    value={skill.description}*/}
-                {/*    onChange={(e) => handleInputChange('description', e.target.value)}*/}
-                {/*/>*/}
-                <ReactQuill
-                    theme="snow"
-                    modules={modules}
-                    formats={formats}
-                    style={{width: 550, height:60}}
-                    onChange={(content) => onUpdate(index, 'description', content)}
+                <Input
+                    placeholder="부연 설명을 입력하세요."
                     value={skill.description}
+                    onChange={(e) => handleInputChange('description', e.target.value)}
                 />
             </div>
         </Border>
