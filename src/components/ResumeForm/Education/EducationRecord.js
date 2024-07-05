@@ -1,7 +1,8 @@
-import MenuListComposition from "../../ResumeCommon/MenuListComposition";
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import MenuListComposition from "../../ResumeCommon/MenuListComposition";
 import UseRadioGroup from "../../ResumeCommon/UseRadioGroup";
+import { call } from "../../../service/ApiService";
 
 const Border = styled.div`
     border-style: solid;
@@ -11,7 +12,7 @@ const Border = styled.div`
     margin-bottom: 10px;
     padding-left: 20px;
     padding-bottom: 20px;
-`
+`;
 
 const Input = styled.input`
     padding: 8px;
@@ -21,29 +22,43 @@ const Input = styled.input`
     width: 150px;
 `;
 
-const EducationRecord = ({onRemove}) => {
-    const [selectedRadio, setSelectedRadio] = useState('first'); // 기본값 설정
+const EducationRecord = ({ index, education, onRemove, onUpdate, resumeId }) => {
+    const [selectedRadio, setSelectedRadio] = useState(education.status);
+    const [selectedEducationType, setSelectedEducationType] = useState(education.educationType || "");
     const menuItems1 = ["고등학교", "대학교 (2,3년)", "대학교 (4년)", "대학원 (석사)", "대학원 (박사)"];
+    const [error, setError] = useState('');
+
+    useEffect(() => {
+        setSelectedRadio(education.status);
+        setSelectedEducationType(education.educationType || "");
+    }, [education.status, education.educationType]);
+
+    useEffect(() => {
+        handleInputChange('educationType', selectedEducationType);
+    }, [selectedEducationType]);
 
     const radioOptions = [
         { value: 'first', label: '재학' },
         { value: 'second', label: '휴학' },
-        { value: 'third', label: '중퇴' }
+        { value: 'third', label: '졸업' }
     ];
+
     const handleRadioChange = (event) => {
-        setSelectedRadio(event.target.value);
+        const value = event.target.value;
+        setSelectedRadio(value);
+        handleInputChange('status', value);
     };
 
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
-    const [error, setError] = useState('');
+    const handleInputChange = (field, value) => {
+        onUpdate(index, field, value);
+    };
 
     const validateDate = (date) => {
         return /^\d{4}\.\d{2}$/.test(date);
     };
 
-    const handleDateChange = (setDate, value) => {
-        setDate(value);
+    const handleStartDateChange = (value) => {
+        handleInputChange('startDate', value);
         if (validateDate(value) || value === '') {
             setError('');
         } else {
@@ -51,9 +66,32 @@ const EducationRecord = ({onRemove}) => {
         }
     };
 
+    const handleEndDateChange = (value) => {
+        handleInputChange('endDate', value);
+        if (validateDate(value) || value === '') {
+            setError('');
+        } else {
+            setError('날짜 형식을 확인해 주세요.');
+        }
+    };
+
+    const handleRemove = async () => {
+        try {
+            await call(`/api/resumes/${resumeId}/educations/${education.id}`, "DELETE");
+            onRemove();
+        } catch (error) {
+            console.error("Failed to delete education data", error);
+        }
+    };
+
+    const handleMenuSelect = (selectedItem) => {
+        setSelectedEducationType(selectedItem);
+        handleInputChange('educationType', selectedItem);
+    };
+
     return (
         <Border>
-            <div style={{display: "flex", justifyContent: "flex-end"}}>
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
                 <button style={{
                     cursor: "pointer",
                     borderRadius: "0px 8px 0px 3px",
@@ -62,25 +100,38 @@ const EducationRecord = ({onRemove}) => {
                     backgroundColor: "rgba(18, 73, 156, 50%)",
                     color: "white",
                     border: "none"
-                }} onClick={onRemove}>-
+                }} onClick={handleRemove}>-
                 </button>
             </div>
-            <div style={{display: "flex", gap: 5}}>
-                <MenuListComposition menuTitle="학력 구분" menuItems={menuItems1}></MenuListComposition>
-                <Input placeholder="학교명"/>
-                <Input placeholder="전공"/>
+            <div style={{ display: "flex", gap: 5 }}>
+                <MenuListComposition
+                    menuTitle="학력 구분"
+                    menuItems={menuItems1}
+                    onSelect={handleMenuSelect}
+                    selected={selectedEducationType}
+                />
+                <Input placeholder="학교명"
+                       value={education.schoolName}
+                       onChange={(e => handleInputChange('schoolName', e.target.value))}
+                />
+                <Input placeholder="전공"
+                       value={education.major}
+                       onChange={(e => handleInputChange('major', e.target.value))}
+                />
             </div>
-            <div style={{display: "flex", gap: 5, alignItems: "center", marginTop: 5}}>
-                <Input style={{width: 70}} placeholder="YYYY.MM" value={startDate}
-                       onChange={(e) => handleDateChange(setStartDate, e.target.value)}/>
+            <div style={{ display: "flex", gap: 5, alignItems: "center", marginTop: 5 }}>
+                <Input placeholder="입학"
+                       value={education.startDate}
+                       onChange={(e => handleStartDateChange(e.target.value))}
+                />
                 <span>-</span>
-                <Input style={{width: 70, marginRight:10}} placeholder="YYYY.MM"
-                       value={endDate}
-                       onChange={(e) => handleDateChange(setEndDate, e.target.value)}
-                       disabled={selectedRadio === 'first'}/>
-                <UseRadioGroup options={radioOptions} value={selectedRadio} onChange={handleRadioChange}/>
+                <Input placeholder="졸업"
+                       value={education.endDate}
+                       onChange={(e => handleEndDateChange(e.target.value))}
+                />
+                <UseRadioGroup options={radioOptions} value={selectedRadio} onChange={handleRadioChange} />
             </div>
-            {error && <div style={{fontSize: 13, color: 'rgba(202, 5, 5, 1)'}}>{error}</div>}
+            {error && <div style={{ fontSize: 13, color: 'rgba(202, 5, 5, 1)' }}>{error}</div>}
         </Border>
     );
 };

@@ -20,7 +20,7 @@ const Education = ({ educations, setEducations, resumeId }) => {
     const addEducation = () => {
         setEducations(prev => [
             ...prev,
-            { id: prev.length, schoolName: '', major: '', startDate: '', endDate: '', status: 'first', educationType: '' }
+            { id: prev.length + 1, schoolName: '', major: '', startDate: '', endDate: '', status: 'first', educationType: '' }
         ]);
     };
 
