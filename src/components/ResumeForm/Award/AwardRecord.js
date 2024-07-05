@@ -11,7 +11,7 @@ const Border = styled.div`
     margin-bottom: 10px;
     padding-left: 20px;
     padding-bottom: 20px;
-    height: 170px;
+    height: 135px;
 `;
 
 const Input = styled.input`
@@ -111,22 +111,13 @@ const AwardRecord = ({ index, award, onRemove, onUpdate, resumeId }) => {
                 </div>
             </div>
             <div style={{ marginTop: 5 }}>
-                {/*<Input as="textarea"*/}
-                {/*       style={{ width: 590, height: 50, fontFamily: "inherit" }}*/}
-                {/*       placeholder="부연 설명을 입력하세요."*/}
-                {/*       value={award.description}*/}
-                {/*       onChange={(e) => handleInputChange('description', e.target.value)}*/}
-                {/*/>*/}
+                <Input as="textarea"
+                       style={{ width: 590, height: 50, fontFamily: "inherit" }}
+                       placeholder="부연 설명을 입력하세요."
+                       value={award.description}
+                       onChange={(e) => handleInputChange('description', e.target.value)}
+                />
             </div>
-            <ReactQuill
-                theme="snow"
-                modules={modules}
-                formats={formats}
-                style={{width: 640, height:60}}
-                onChange={(content) => onUpdate(index, 'description', content)}
-                value={award.description}
-            />
-            <div></div>
         </Border>
     );
 };

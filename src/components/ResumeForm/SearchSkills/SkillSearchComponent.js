@@ -2,7 +2,15 @@ import React, { useState } from 'react';
 import Modal from 'react-modal';
 import SkillSelectorModal from "./SkillSelectorModal";
 import { icons as skillsData } from '../../../assets/icons';
-import styled from "styled-components";
+import styled, {createGlobalStyle} from "styled-components";
+
+const GlobalStyle = createGlobalStyle`
+  @media print {
+    .search-btn {
+      display: none;
+    }
+  }
+`;
 
 const Button = styled.div`
     min-width: 35px;
@@ -65,8 +73,10 @@ const SkillSearchComponent = ({ singleSelection = false, onSkillChange, selected
     };
 
     return (
+        <>
+            <GlobalStyle/>
         <div style={{ display: "flex", alignItems: "center" }}>
-            <Button onClick={openModal}>검색</Button>
+            <Button className="search-btn" onClick={openModal}>검색</Button>
             {selectedSkills && (
                 <SkillsContainer>
                     {selectedSkills.split(', ').map((skillIcon, index) => (
@@ -83,6 +93,7 @@ const SkillSearchComponent = ({ singleSelection = false, onSkillChange, selected
                 skillsData={skillsData}
             />
         </div>
+        </>
     );
 };
 
