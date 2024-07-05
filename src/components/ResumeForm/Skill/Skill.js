@@ -38,7 +38,7 @@ const Skill = ({ skills, setSkills, resumeId }) => {
     };
 
     return (
-        <SectionContainer title="Skills">
+        <SectionContainer title="Skill">
             {skills.map((skill, index) => (
                 <SkillRecord
                     key={index}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import LanguageSection from './Language/LanguageSection';
 import AwardSection from './Award/AwardSection';
 import SkillSection from './Skill/SkillSection';
@@ -14,79 +14,57 @@ import BlankSection from './Blank/BlankSection';
 const FormContent = ({ activeSections, languages, setLanguages, awards, setAwards, skills, setSkills, careers, setCareers,
                          projects, setProjects, activities, setActivities, trainings, setTrainings, aboutMe, setAboutMe,
                          educations, setEducations, certificates, setCertificates, resumeId, onRemoveBlankSection }) => {
+
+    const sectionRefs = useRef([]);
+
+    useEffect(() => {
+        const handlePageBreaks = () => {
+            let currentPageHeight = 0;
+            const pageHeight = 1200; // A4 페이지 높이 (픽셀 단위)
+
+            sectionRefs.current.forEach((section) => {
+                if (section) { // null 체크
+                    const sectionHeight = section.scrollHeight;
+
+                    if (currentPageHeight + sectionHeight > pageHeight) {
+                        section.classList.add('page-break-before');
+                        currentPageHeight = sectionHeight;
+                    } else {
+                        section.classList.remove('page-break-before');
+                        currentPageHeight += sectionHeight;
+                    }
+                }
+            });
+        };
+
+        // 초기 및 리사이즈 시 실행
+        handlePageBreaks();
+        window.addEventListener('resize', handlePageBreaks);
+
+        return () => {
+            window.removeEventListener('resize', handlePageBreaks);
+        };
+    }, [activeSections]);
+
     return (
         <div className="section-content">
             {activeSections.map((section, index) => {
-                switch (section) {
-                    case 'Language':
-                        return (
-                            <div key={index} className="section-item">
-                                <LanguageSection languages={languages} setLanguages={setLanguages} resumeId={resumeId} />
-                            </div>
-                        );
-                    case 'Award':
-                        return (
-                            <div key={index} className="section-item">
-                                <AwardSection awards={awards} setAwards={setAwards} resumeId={resumeId} />
-                            </div>
-                        );
-                    case 'Skill':
-                        return (
-                            <div key={index} className="section-item">
-                                <SkillSection skills={skills} setSkills={setSkills} resumeId={resumeId} />
-                            </div>
-                        );
-                    case 'Career':
-                        return (
-                            <div key={index} className="section-item">
-                                <CareerSection careers={careers} setCareers={setCareers} resumeId={resumeId} />
-                            </div>
-                        );
-                    case 'Project':
-                        return (
-                            <div key={index} className="section-item">
-                                <ProjectSection projects={projects} setProjects={setProjects} resumeId={resumeId} />
-                            </div>
-                        );
-                    case 'Certificate':
-                        return (
-                            <div key={index} className="section-item">
-                                <CertificateSection certificates={certificates} setCertificates={setCertificates} resumeId={resumeId} />
-                            </div>
-                        );
-                    case 'Activity':
-                        return (
-                            <div key={index} className="section-item">
-                                <ActivitySection activities={activities} setActivities={setActivities} resumeId={resumeId} />
-                            </div>
-                        );
-                    case 'Training':
-                        return (
-                            <div key={index} className="section-item">
-                                <TrainingSection trainings={trainings} setTrainings={setTrainings} resumeId={resumeId} />
-                            </div>
-                        );
-                    case 'About Me':
-                        return (
-                            <div key={index} className="section-item">
-                                <AboutMeSection aboutMe={aboutMe} setAboutMe={setAboutMe} resumeId={resumeId} />
-                            </div>
-                        );
-                    case 'Education':
-                        return (
-                            <div key={index} className="section-item">
-                                <EducationSection educations={educations} setEducations={setEducations} resumeId={resumeId} />
-                            </div>
-                        );
-                    case 'Blank':
-                        return (
-                            <div key={index} className="section-item">
-                                <BlankSection onRemove={() => onRemoveBlankSection(index)} />
-                            </div>
-                        );
-                    default:
-                        return null;
-                }
+                return (
+                    <div key={index} className={`section-item`} ref={(el) => sectionRefs.current[index] = el}>
+                        {/* 섹션별로 컴포넌트 렌더링 */}
+                        {section === 'Language' && <LanguageSection languages={languages} setLanguages={setLanguages} resumeId={resumeId} />}
+                        {section === 'Award' && <AwardSection awards={awards} setAwards={setAwards} resumeId={resumeId} />}
+                        {section === 'Skill' && <SkillSection skills={skills} setSkills={setSkills} resumeId={resumeId} />}
+                        {section === 'Career' && <CareerSection careers={careers} setCareers={setCareers} resumeId={resumeId} />}
+                        {section === 'Project' && <ProjectSection projects={projects} setProjects={setProjects} resumeId={resumeId} />}
+                        {section === 'Certificate' && <CertificateSection certificates={certificates} setCertificates={setCertificates} resumeId={resumeId} />}
+                        {section === 'Activity' && <ActivitySection activities={activities} setActivities={setActivities} resumeId={resumeId} />}
+                        {section === 'Training' && <TrainingSection trainings={trainings} setTrainings={setTrainings} resumeId={resumeId} />}
+                        {section === 'About Me' && <AboutMeSection aboutMe={aboutMe} setAboutMe={setAboutMe} resumeId={resumeId} />}
+                        {section === 'Education' && <EducationSection educations={educations} setEducations={setEducations} resumeId={resumeId} />}
+                        {section === 'Blank' && <BlankSection onRemove={() => onRemoveBlankSection(index)} />}
+                    </div>
+                );
             })}
         </div>
     );

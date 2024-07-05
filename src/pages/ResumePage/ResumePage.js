@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from 'react-router-dom';
+import React, {useEffect, useRef, useState} from "react";
+import {useNavigate, useParams} from 'react-router-dom';
 import './ResumePage.css';
 import ResumeNav from "../../components/ResumeCommon/ResumeNav";
 import styled from "styled-components";
 import CategoryList from "../../components/ResumeCategory/CategoryList";
 import FormContent from "../../components/ResumeForm/FormContent";
-import { call } from "../../service/ApiService";
-import { kogptService } from "../../service/kogptService";
-import axios from "axios";
-import {TextField, Button, CircularProgress, Typography, Box, Paper, Collapse, IconButton} from '@mui/material';
+import {call} from "../../service/ApiService";
+import {kogptService} from "../../service/kogptService";
+import {Box, Button, CircularProgress, Collapse, IconButton, Paper, TextField, Typography} from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import kakaoBrainLogo from '../../assets/kakaobrain-logo.png';
@@ -165,10 +164,12 @@ function ResumePage({ baseUrl }) {
         }
     };
 
-    // PDF 인쇄, 저장, 미리보기
+    const printRef = useRef(null);
     const handlePrint = () => {
         window.print();
     };
+
+
 
     const handleRemoveBlankSection = (index) => {
         setActiveSections(prevSections => prevSections.filter((_, i) => i !== index));
@@ -291,7 +292,7 @@ function ResumePage({ baseUrl }) {
                         </Box>
                     </GptContainer>
                 </div>
-                <div className="form-container">
+                <div className="form-container" ref={printRef}>
                     <div id="printContent" style={{ width: '100%',  background: 'white', margin: '0 auto' }}>
                         <div style={{ display: 'flex', justifyContent: 'center', marginTop: 30, marginBottom: 10 }}>
                             <ResumeTitle type="text" value={resumeTitle} onChange={handleTitleChange}/>

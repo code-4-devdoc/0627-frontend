@@ -49,6 +49,9 @@
     padding-right: 132.5px;
 }
 
+.section-item {
+    page-break-inside: avoid;
+}
 
 /* print.css */
 /* 인쇄할 때만 선택한 항목들이 보이도록 함 */
@@ -72,6 +75,22 @@
     }
 
     .container {
-        margin-bottom: 10px !important; /* 인쇄 시 항목 간의 간격을 줄이기 위해 수정 */
+        page-break-inside: avoid;
+    }
+
+    .form-container {
+        -webkit-print-color-adjust: exact;
+    }
+
+    .section-item {
+        page-break-inside: avoid;
+    }
+
+    .section-item:last-child {
+        page-break-after: auto;
+    }
+
+    .page-break-before {
+        page-break-before: always;
     }
 }
