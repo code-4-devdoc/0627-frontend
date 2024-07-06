@@ -17,6 +17,14 @@ const GlobalStyle = createGlobalStyle`
       .image-preview {
           display: block !important; /* Ensure image-preview is visible */
        }
+        .hidden-print, .image-container-no-image {
+            display: none !important;
+        }
+        .print-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
     }
 `;
 
@@ -28,6 +36,10 @@ const Input = styled.input`
     border-radius: 4px;
     display: block;
     font-size: 15px;
+    resize: none;
+    overflow: hidden;
+    height: auto;
+    width: 190px;
 `;
 
 const Button = styled.button`
@@ -55,7 +67,20 @@ const ImageContainer = styled.div`
     justify-content: center;
     border-style: dashed;
     border-color: rgba(239, 245, 255, 1);
-    padding: 15px 0 15px 0;
+    padding: 10px 0 10px 0;
+`;
+
+const InputContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin-right: 40px;
+
+    @media print {
+        &.print-center {
+            justify-content: center;
+        }
+    }
 `;
 
 function useInputValidation(initialValue, pattern) {
@@ -69,7 +94,12 @@ function useInputValidation(initialValue, pattern) {
         setValue(newValue);
     }
 
-    return { value, setValue, onChange, isValid, setIsValid };
+    function reset() {
+        setValue('');
+        setIsValid(true);
+    }
+
+    return { value, setValue, onChange, isValid, setIsValid, reset };
 }
 
 const AboutMe = ({ aboutMe, setAboutMe, resumeId }) => {
@@ -122,9 +152,9 @@ const AboutMe = ({ aboutMe, setAboutMe, resumeId }) => {
         setIsActive(prev => {
             const newState = { ...prev, [field]: !prev[field] };
 
-            if (prev[field] && !input.isValid) {
-                input.setValue("");
-                input.setIsValid(true);
+            if (!newState[field]) {
+                input.reset();
+                handleInputChange(field, "");
             }
             return newState;
         });
@@ -137,12 +167,22 @@ const AboutMe = ({ aboutMe, setAboutMe, resumeId }) => {
     const blogInput = useInputValidation(aboutMe?.blog || '', /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/);
     const introInput = useInputValidation(aboutMe?.introduction || '', /^[\s\S]*$/);
 
+    const handleIntroductionChange = (e) => {
+        const value = e.target.value;
+        const lineCount = (value.match(/\n/g) || []).length + 1;
+
+        if (lineCount <= 3) {
+            introInput.onChange(e);
+            handleInputChange('introduction', value);
+        }
+    };
+
     return (
         <>
             <GlobalStyle/>
         <SectionContainer title="About Me">
-            <div style={{ display: "flex", paddingTop: 10 }}>
-                <div>
+            <div style={{ display: "flex", paddingTop: 10, justifyContent:'space-between', marginRight: 40 }}>
+                <InputContainer className="print-center">
                     <Input
                         placeholder="이름"
                         style={{ marginLeft: 39 }}
@@ -150,83 +190,94 @@ const AboutMe = ({ aboutMe, setAboutMe, resumeId }) => {
                         onChange={(e) => handleInputChange('name', e.target.value)}
                     />
 
-                    <FieldWithToggleButton
-                        icon={birthdayIcon}
-                        placeholder="생년월일 (YYYY.MM.DD)"
-                        isActive={isActive.birthday}
-                        inputProps={birthdayInput}
-                        toggleActive={toggleActive}
-                        fieldType="birthday"
-                        errorMessage="날짜 형식을 확인해 주세요."
-                        value={birthdayInput.value}
-                        onChange={(e) => {
-                            birthdayInput.onChange(e);
-                            handleInputChange('birthday', e.target.value);
-                        }}
-                    />
+                    <div className={!isActive.birthday ? 'hidden-print' : ''}>
+                        <FieldWithToggleButton
+                            icon={birthdayIcon}
+                            placeholder="생년월일 (YYYY.MM.DD)"
+                            isActive={isActive.birthday}
+                            inputProps={birthdayInput}
+                            toggleActive={toggleActive}
+                            fieldType="birthday"
+                            errorMessage="날짜 형식을 확인해 주세요."
+                            value={birthdayInput.value}
+                            onChange={(e) => {
+                                birthdayInput.onChange(e);
+                                handleInputChange('birthday', e.target.value);
+                            }}
+                        />
+                    </div>
 
-                    <FieldWithToggleButton
-                        icon={phoneIcon}
-                        placeholder="전화번호 ('-' 포함)"
-                        isActive={isActive.phone}
-                        inputProps={phoneInput}
-                        toggleActive={toggleActive}
-                        fieldType="phone"
-                        errorMessage="전화번호 형식을 확인해 주세요."
-                        value={phoneInput.value}
-                        onChange={(e) => {
-                            phoneInput.onChange(e);
-                            handleInputChange('phoneNumber', e.target.value);
-                        }}
-                    />
+                    <div className={!isActive.phone ? 'hidden-print' : ''}>
+                        <FieldWithToggleButton
+                            icon={phoneIcon}
+                            placeholder="전화번호 ('-' 포함)"
+                            isActive={isActive.phone}
+                            inputProps={phoneInput}
+                            toggleActive={toggleActive}
+                            fieldType="phone"
+                            errorMessage="전화번호 형식을 확인해 주세요."
+                            value={phoneInput.value}
+                            onChange={(e) => {
+                                phoneInput.onChange(e);
+                                handleInputChange('phoneNumber', e.target.value);
+                            }}
+                        />
+                    </div>
 
-                    <FieldWithToggleButton
-                        icon={emailIcon}
-                        placeholder="이메일"
-                        isActive={isActive.email}
-                        inputProps={emailInput}
-                        toggleActive={toggleActive}
-                        fieldType="email"
-                        errorMessage="이메일 형식을 확인해 주세요."
-                        value={emailInput.value}
-                        onChange={(e) => {
-                            emailInput.onChange(e);
-                            handleInputChange('email', e.target.value);
-                        }}
-                    />
+                    <div className={!isActive.email ? 'hidden-print' : ''}>
+                        <FieldWithToggleButton
+                            icon={emailIcon}
+                            placeholder="이메일"
+                            isActive={isActive.email}
+                            inputProps={emailInput}
+                            toggleActive={toggleActive}
+                            fieldType="email"
+                            errorMessage="이메일 형식을 확인해 주세요."
+                            value={emailInput.value}
+                            onChange={(e) => {
+                                emailInput.onChange(e);
+                                handleInputChange('email', e.target.value);
+                            }}
+                        />
+                    </div>
 
-                    <FieldWithToggleButton
-                        icon={githubIcon}
-                        placeholder="깃허브 주소"
-                        isActive={isActive.githubAddress}
-                        inputProps={githubInput}
-                        toggleActive={toggleActive}
-                        fieldType="githubAddress"
-                        errorMessage="깃허브 주소를 확인해 주세요."
-                        value={githubInput.value}
-                        onChange={(e) => {
-                            githubInput.onChange(e);
-                            handleInputChange('github', e.target.value);
-                        }}
-                    />
+                    <div className={!isActive.githubAddress ? 'hidden-print' : ''}>
+                        <FieldWithToggleButton
+                            icon={githubIcon}
+                            placeholder="깃허브 주소"
+                            isActive={isActive.githubAddress}
+                            inputProps={githubInput}
+                            toggleActive={toggleActive}
+                            fieldType="githubAddress"
+                            errorMessage="깃허브 주소를 확인해 주세요."
+                            value={githubInput.value}
+                            onChange={(e) => {
+                                githubInput.onChange(e);
+                                handleInputChange('github', e.target.value);
+                            }}
+                        />
+                    </div>
 
-                    <FieldWithToggleButton
-                        icon={blogIcon}
-                        placeholder="블로그 주소"
-                        isActive={isActive.blogAddress}
-                        inputProps={blogInput}
-                        toggleActive={toggleActive}
-                        fieldType="blogAddress"
-                        errorMessage="블로그 주소를 확인해 주세요."
-                        value={blogInput.value}
-                        onChange={(e) => {
-                            blogInput.onChange(e);
-                            handleInputChange('blog', e.target.value);
-                        }}
-                    />
-                </div>
+                    <div className={!isActive.blogAddress ? 'hidden-print' : ''}>
+                        <FieldWithToggleButton
+                            icon={blogIcon}
+                            placeholder="블로그 주소"
+                            isActive={isActive.blogAddress}
+                            inputProps={blogInput}
+                            toggleActive={toggleActive}
+                            fieldType="blogAddress"
+                            errorMessage="블로그 주소를 확인해 주세요."
+                            value={blogInput.value}
+                            onChange={(e) => {
+                                blogInput.onChange(e);
+                                handleInputChange('blog', e.target.value);
+                            }}
+                        />
+                    </div>
+
+                </InputContainer>
                 <div>
-                    <ImageContainer className="image-container" style={{ marginLeft: 60 }}>
+                    <ImageContainer className={imagePreviewUrl ? "image-container" : "image-container-no-image"} style={{ marginLeft: 60 }}>
                         <input className="image-input-btn" style={{ marginLeft: 55 }} type="file" onChange={handleImageChange} accept="image/*" />
                         {imagePreviewUrl && (
                             <ImagePreview className="image-preview" style={{ marginTop: 10 }} src={imagePreviewUrl} alt="Profile Image" />
@@ -236,22 +287,20 @@ const AboutMe = ({ aboutMe, setAboutMe, resumeId }) => {
             </div>
 
             <div style={{ display: "flex", marginLeft: 39 }}>
-                <div>
+                <div className={!isActive.selfIntroduction ? 'hidden-print' : ''}>
                     <Input
-                        style={{ width: 600, height: 60, fontFamily: "inherit" }}
+                        style={{width: 600, height: 75, fontFamily: "inherit", lineHeight: 1.5}}
                         as="textarea"
+                        rows={4}
                         placeholder="자기소개를 입력하세요."
                         disabled={!isActive.selfIntroduction}
                         {...introInput}
                         value={aboutMe?.introduction || ''}
-                        onChange={(e) => {
-                            introInput.onChange(e);
-                            handleInputChange('introduction', e.target.value);
-                        }}
                         isValid={introInput.isValid}
+                        onChange={handleIntroductionChange}
                     />
                     {(isActive.selfIntroduction && !introInput.isValid) && (
-                        <p style={{ color: 'rgba(202, 5, 5, 1)', marginTop: -8, marginBottom: 7, fontSize: 13 }}>
+                        <p style={{color: 'rgba(202, 5, 5, 1)', marginTop: -8, marginBottom: 7, fontSize: 13}}>
                             입력을 확인해 주세요.
                         </p>
                     )}

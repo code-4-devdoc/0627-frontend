@@ -27,7 +27,7 @@ const SectionTitle = styled.div`
     padding-left: 25px;
     font-weight: 500;
     @media print {
-        margin-left: 75px;
+        margin-left: 40px;
         page-break-after: avoid;
     }
 `;

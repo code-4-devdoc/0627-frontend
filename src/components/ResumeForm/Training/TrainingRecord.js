@@ -1,8 +1,21 @@
 import React, {useEffect, useState} from 'react';
 import CheckboxLabels from "../../ResumeCommon/CheckboxLabels";
-import styled from "styled-components";
+import styled, {createGlobalStyle} from "styled-components";
 import {call} from "../../../service/ApiService";
-import training from "./Training";
+
+const GlobalStyle = createGlobalStyle`
+  @media print {
+      .remove-btn {
+          display: none !important;
+      }
+      .training-status {
+          display: block !important;
+      }
+      .training-status-hidden {
+          display: none !important;
+      }
+  }
+`;
 
 const Border = styled.div`
     border-style: solid;
@@ -77,9 +90,12 @@ const TrainingRecord = ({index, training, onRemove, onUpdate, resumeId}) => {
     };
 
     return (
+        <>
+            <GlobalStyle />
         <Border>
-            <div style={{display: "flex", justifyContent: "flex-end"}}>
-                <button style={{
+            <div style={{display: "flex", justifyContent: "flex-end", height: 20}}>
+                <button className="remove-btn"
+                    style={{
                     cursor: "pointer",
                     borderRadius: "0px 8px 0px 3px",
                     width: 30,
@@ -103,7 +119,7 @@ const TrainingRecord = ({index, training, onRemove, onUpdate, resumeId}) => {
                     value={training.institution}
                     onChange={(e) => handleInputChange('institution', e.target.value)}
                 />
-                <div style={{ display: "flex", gap: 5, alignItems: "center", marginLeft: 5 }}>
+                <div style={{display: "flex", gap: 5, alignItems: "center", marginLeft: 5}}>
                     <Input style={{width: 70}} placeholder="YYYY.MM" value={training.startDate}
                            onChange={(e) => handleStartDateChange(e.target.value)}/>
                     <span>-</span>
@@ -114,12 +130,21 @@ const TrainingRecord = ({index, training, onRemove, onUpdate, resumeId}) => {
                         value={isChecked ? "N/A" : training.endDate}
                         onChange={(e) => handleEndDateChange(e.target.value)}
                     />
-                    <CheckboxLabels option={checkboxOption} checked={isChecked}
-                                    onChange={handleCheckboxChange}></CheckboxLabels>
+                    <div className="checkbox-label">
+                        <CheckboxLabels option={checkboxOption} checked={isChecked}
+                                        onChange={handleCheckboxChange}></CheckboxLabels>
+                    </div>
+                    <div
+                        className={isChecked ? "training-status" : "training-status-hidden"}
+                        style={{display: 'none', marginLeft: 10}}
+                    >
+                        진행 중
+                    </div>
                     {error && <div style={{fontSize: 13, color: 'rgba(202, 5, 5, 1)'}}>{error}</div>}
                 </div>
             </div>
         </Border>
+        </>
     );
 };
 

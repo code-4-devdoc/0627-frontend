@@ -1,7 +1,14 @@
 import React, {useMemo, useState} from 'react';
-import styled from "styled-components";
+import styled, {createGlobalStyle} from "styled-components";
 import { call } from "../../../service/ApiService";
-import ReactQuill from "react-quill";
+
+const GlobalStyle = createGlobalStyle`
+  @media print {
+      .remove-btn {
+          display: none !important;
+      }
+  }
+`;
 
 const Border = styled.div`
     border-style: solid;
@@ -89,9 +96,13 @@ const AwardRecord = ({ index, award, onRemove, onUpdate, resumeId }) => {
     }, []);
 
     return (
+        <>
+            <GlobalStyle/>
         <Border>
-            <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <button style={{
+            <div style={{ display: "flex", justifyContent: "flex-end", height: 20 }}>
+                <button
+                    className="remove-btn"
+                    style={{
                     cursor: "pointer",
                     borderRadius: "0px 8px 0px 3px",
                     width: 30,
@@ -119,6 +130,7 @@ const AwardRecord = ({ index, award, onRemove, onUpdate, resumeId }) => {
                 />
             </div>
         </Border>
+        </>
     );
 };
 

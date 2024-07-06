@@ -20,7 +20,7 @@ const FormContent = ({ activeSections, languages, setLanguages, awards, setAward
     useEffect(() => {
         const handlePageBreaks = () => {
             let currentPageHeight = 0;
-            const pageHeight = 1200; // A4 페이지 높이 (픽셀 단위)
+            const pageHeight = 1150; // A4 페이지 높이 (픽셀 단위)
 
             sectionRefs.current.forEach((section) => {
                 if (section) { // null 체크

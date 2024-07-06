@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from "react";
+import React, {useMemo, useRef, useState} from "react";
 import styled, {createGlobalStyle} from "styled-components";
 import CheckboxLabels from "../../ResumeCommon/CheckboxLabels";
 import SkillSearchComponent from "../SearchSkills/SkillSearchComponent";
@@ -8,8 +8,8 @@ import 'react-quill/dist/quill.snow.css';
 
 const GlobalStyle = createGlobalStyle`
   @media print {
-      .add-quill-btn,
-      .ql-toolbar {
+      .add-quill-btn, .remove-btn,
+      .ql-toolbar, .checkbox-label {
           display: none !important;
       }
       .ql-container.ql-snow {
@@ -25,11 +25,23 @@ const GlobalStyle = createGlobalStyle`
           height: auto !important;
           min-height: auto !important;
       }
-      .border-no-quill {
+      .border-no-quill-1 {
+          height: 55px !important;
+      }
+      .border-with-quill-1 {
           height: 160px !important;
       }
-      .border-with-quill {
-          height: 210px !important;
+      .border-with-techStack-1 {
+          height: 150px !important;
+      }
+      .border-with-quill-techStack-1 {
+          height: 220px !important;
+      }
+      .employment-status {
+          display: block !important;
+      }
+      .employment-status-hidden {
+          display: none !important;
       }
   }
 `;
@@ -43,7 +55,7 @@ const Border = styled.div`
     margin-bottom: 10px;
     padding-left: 20px;
     padding-bottom: 20px;
-    height: ${(props) => (props.quill ? '300px' : '195px')};
+    height: ${(props) => (props.quill ? '305px' : '150px')};
 `;
 
 const Input = styled.input`
@@ -52,6 +64,7 @@ const Input = styled.input`
     border-radius: 4px;
     font-size: 15px;
     width: 150px;
+    height: 20px;
 `;
 
 const Button = styled.div`
@@ -98,7 +111,8 @@ const CareerRecord = ({ body, setBody, index, career, onRemove, onUpdate, resume
 
     const [error, setError] = useState('');
 
-    const [quill, setQuill] = useState(false);
+    const [quill, setQuill] = useState(true);
+    const quillRef = useRef(null);
 
     const handleInputChange = (field, value) => {
         onUpdate(index, field, value);
@@ -148,7 +162,7 @@ const CareerRecord = ({ body, setBody, index, career, onRemove, onUpdate, resume
         return {
             toolbar: {
                 container: [
-                    [{ size: ['small', false, 'large', 'huge'] }],
+                    [{ size: ['small', false ] }],
                     [{ align: [] }],
                     ['bold', 'italic', 'underline', 'strike'],
                     [{ list: 'ordered' }, { list: 'bullet' }],
@@ -167,11 +181,41 @@ const CareerRecord = ({ body, setBody, index, career, onRemove, onUpdate, resume
         setQuill(prevQuill => !prevQuill);
     }
 
+
+    const techStackEmpty = !career.techStack || career.techStack.length === 0;
+
+    const getBorderClass = () => {
+        if (quill && !techStackEmpty) return 'border-with-quill-techStack-1';
+        if (quill) return 'border-with-quill-1';
+        if (!techStackEmpty) return 'border-with-techStack-1';
+        return 'border-no-quill-1';
+    };
+
+    const handleQuillChange = (content, delta, source, editor) => {
+        const lines = editor.getContents().ops.reduce((acc, op) => {
+            const text = op.insert;
+            if (typeof text === 'string') {
+                return acc + text.split('\n').length - 1;
+            }
+            return acc;
+        }, 0);
+
+        if (lines <= 4) {
+            onUpdate(index, 'description', content);
+        } else {
+            const newContent = editor.getText().split('\n').slice(0, 4).join('\n');
+            quillRef.current.getEditor().setContents([{ insert: newContent }]);
+        }
+    }
+
     return (
         <>
-        <Border quill={quill} className={`print-border ${quill ? "border-with-quill" : "border-no-quill"}`}>
-            <div style={{display: "flex", justifyContent: "flex-end"}}>
-                <button style={{
+            <GlobalStyle />
+        <Border quill={quill} className={getBorderClass()}>
+            <div style={{display: "flex", justifyContent: "flex-end", height:20}}>
+                <button
+                    className="remove-btn"
+                    style={{
                     cursor: "pointer",
                     borderRadius: "0px 8px 0px 3px",
                     width: 30,
@@ -187,22 +231,29 @@ const CareerRecord = ({ body, setBody, index, career, onRemove, onUpdate, resume
                        onChange={(e) => onUpdate(index, 'company', e.target.value)}/>
                 <Input placeholder="부서명/직책" value={career.department}
                        onChange={(e) => onUpdate(index, 'department', e.target.value)}/>
+                <div style={{display: "flex", alignItems: "center", gap: 5}}>
+                    <Input style={{width: 70}} placeholder="YYYY.MM" value={career.startDate}
+                           onChange={(e) => handleStartDateChange(e.target.value)}/>
+                    <span>-</span>
+                    <Input
+                        style={{width: 70}}
+                        placeholder={isChecked ? "N/A" : "YYYY.MM"}
+                        disabled={isChecked}
+                        value={isChecked ? "N/A" : career.endDate}
+                        onChange={(e) => handleEndDateChange(e.target.value)}
+                    />
+                    <div className="checkbox-label">
+                        <CheckboxLabels option={checkboxOption} checked={isChecked}
+                                        onChange={handleCheckboxChange}></CheckboxLabels></div>
+                    <div
+                        className={isChecked ? "employment-status" : "employment-status-hidden"}
+                        style={{display: 'none', marginLeft: 10}}
+                    >
+                        재직 중
+                    </div>
+                </div>
+                {error && <div style={{fontSize: 13, color: 'rgba(202, 5, 5, 1)'}}>{error}</div>}
             </div>
-            <div style={{display: "flex", height: 35, alignItems: "center", marginTop: 5, gap: 5}}>
-                <Input style={{width: 70}} placeholder="YYYY.MM" value={career.startDate}
-                       onChange={(e) => handleStartDateChange(e.target.value)}/>
-                <span>-</span>
-                <Input
-                    style={{width: 70}}
-                    placeholder={isChecked ? "N/A" : "YYYY.MM"}
-                    disabled={isChecked}
-                    value={isChecked ? "N/A" : career.endDate}
-                    onChange={(e) => handleEndDateChange(e.target.value)}
-                />
-                <CheckboxLabels option={checkboxOption} checked={isChecked}
-                                onChange={handleCheckboxChange}></CheckboxLabels>
-            </div>
-            {error && <div style={{fontSize: 13, color: 'rgba(202, 5, 5, 1)'}}>{error}</div>}
             <div style={{height: 5}}></div>
             <SkillSearchComponent
                 singleSelection={true}
@@ -229,9 +280,10 @@ const CareerRecord = ({ body, setBody, index, career, onRemove, onUpdate, resume
                     theme="snow"
                     modules={modules}
                     formats={formats}
-                    style={{width: 630, height: 60, marginTop: 3}}
-                    onChange={(content) => onUpdate(index, 'description', content)}
+                    style={{width: 630, height: 100, marginTop: 3}}
+                    onChange={handleQuillChange}
                     value={career.description}
+                    ref={quillRef}
                 />}
             </div>
         </Border>

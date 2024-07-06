@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from "react";
+import React, {useMemo, useRef, useState} from "react";
 import styled, {createGlobalStyle} from "styled-components";
 import CheckboxLabels from "../../ResumeCommon/CheckboxLabels";
 import SkillSearchComponent from "../SearchSkills/SkillSearchComponent";
@@ -7,7 +7,7 @@ import ReactQuill from "react-quill";
 
 const GlobalStyle = createGlobalStyle`
   @media print {
-      .add-quill-btn,
+      .add-quill-btn, .remove-btn
       .ql-toolbar {
           display: none !important;
       }
@@ -25,10 +25,22 @@ const GlobalStyle = createGlobalStyle`
           min-height: auto !important;
       }
       .border-no-quill {
-          height: 160px !important;
+          height: 100px !important; 
       }
       .border-with-quill {
-          height: 210px !important;
+          height: 200px !important;
+      }
+      .border-with-techStack {
+          height: 160px !important;
+      }
+      .border-with-quill-techStack {
+          height: 280px !important;
+      }
+      .project-status {
+          display: block !important;
+      }
+      .project-status-hidden {
+          display: none !important;
       }
   }
 `;
@@ -41,7 +53,7 @@ const Border = styled.div`
     margin-bottom: 10px;
     padding-left: 20px;
     padding-bottom: 20px;
-    height: ${(props) => (props.quill ? '298px' : '195px')};
+    height: ${(props) => (props.quill ? '350px' : '195px')};
 `;
 
 const Input = styled.input`
@@ -95,6 +107,8 @@ const ProjectRecord = ({ index, project, onRemove, onUpdate, resumeId }) => {
 
     const [error, setError] = useState('');
     const [quill, setQuill] = useState(false);
+    const quillRef = useRef(null);
+
 
     const handleInputChange = (field, value) => {
         onUpdate(index, field, value);
@@ -144,7 +158,7 @@ const ProjectRecord = ({ index, project, onRemove, onUpdate, resumeId }) => {
         return {
             toolbar: {
                 container: [
-                    [{ size: ['small', false, 'large', 'huge'] }],
+                    [{ size: ['small', false] }],
                     [{ align: [] }],
                     ['bold', 'italic', 'underline', 'strike'],
                     [{ list: 'ordered' }, { list: 'bullet' }],
@@ -163,12 +177,39 @@ const ProjectRecord = ({ index, project, onRemove, onUpdate, resumeId }) => {
         setQuill(prevQuill => !prevQuill);
     }
 
+    const techStackEmpty = !project.techStack || project.techStack.length === 0;
+
+    const getBorderClass = () => {
+        if (quill && !techStackEmpty) return 'border-with-quill-techStack';
+        if (quill) return 'border-with-quill';
+        if (!techStackEmpty) return 'border-with-techStack';
+        return 'border-no-quill';
+    };
+
+    const handleQuillChange = (content, delta, source, editor) => {
+        const lines = editor.getContents().ops.reduce((acc, op) => {
+            const text = op.insert;
+            if (typeof text === 'string') {
+                return acc + text.split('\n').length - 1;
+            }
+            return acc;
+        }, 0);
+
+        if (lines <= 4) {
+            onUpdate(index, 'description', content);
+        } else {
+            const newContent = editor.getText().split('\n').slice(0, 4).join('\n');
+            quillRef.current.getEditor().setContents([{ insert: newContent }]);
+        }
+    }
+
     return (
         <>
             <GlobalStyle />
-        <Border quill={quill} className={`print-border ${quill ? "border-with-quill" : "border-no-quill"}`}>
-            <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <button style={{
+        <Border quill={quill} className={getBorderClass()}>
+            <div style={{ display: "flex", justifyContent: "flex-end", height: 20 }}>
+                <button className="remove-btn"
+                    style={{
                     cursor: "pointer",
                     borderRadius: "0px 8px 0px 3px",
                     width: 30,
@@ -179,21 +220,33 @@ const ProjectRecord = ({ index, project, onRemove, onUpdate, resumeId }) => {
                 }} onClick={handleRemove}>-
                 </button>
             </div>
-            <div style={{ display: "flex", height: 35, alignItems: "center", marginTop: 5, gap: 5 }}>
-                <Input style={{ width: 150 }} placeholder="프로젝트명" value={project.title} onChange={(e) => onUpdate(index, 'title', e.target.value)} />
-                <Input style={{ width: 70 }} placeholder="YYYY.MM" value={project.startDate} onChange={(e) => handleStartDateChange(e.target.value)} />
+            <div style={{display: "flex", height: 35, alignItems: "center", marginTop: 5, gap: 5}}>
+                <Input style={{width: 150}} placeholder="프로젝트명" value={project.title}
+                       onChange={(e) => onUpdate(index, 'title', e.target.value)}/>
+                <Input style={{width: 70}} placeholder="YYYY.MM" value={project.startDate}
+                       onChange={(e) => handleStartDateChange(e.target.value)}/>
                 <span>-</span>
                 <Input
-                    style={{ width: 70 }}
+                    style={{width: 70}}
                     placeholder={isChecked ? "N/A" : "YYYY.MM"}
                     disabled={isChecked}
                     value={isChecked ? "N/A" : project.endDate}
                     onChange={(e) => handleEndDateChange(e.target.value)}
                 />
-                <CheckboxLabels option={checkboxOption} checked={isChecked} onChange={handleCheckboxChange}></CheckboxLabels>
+                <div className="checkbox-label">
+                    <CheckboxLabels option={checkboxOption} checked={isChecked}
+                                    onChange={handleCheckboxChange}></CheckboxLabels>
+                </div>
+                <div
+                    className={isChecked ? "project-status" : "project-status-hidden"}
+                    style={{display: 'none', marginLeft: 10}}
+                >
+                    진행 중
+                </div>
             </div>
-            {error && <div style={{ fontSize: 13, color: 'rgba(202, 5, 5, 1)' }}>{error}</div>}
-            <Input style={{ width: 620, marginTop: 5 }} placeholder="프로젝트 소개" value={project.intro} onChange={(e) => onUpdate(index, 'intro', e.target.value)} />
+            {error && <div style={{fontSize: 13, color: 'rgba(202, 5, 5, 1)'}}>{error}</div>}
+            <Input style={{width: 620, marginTop: 5}} placeholder="프로젝트 소개" value={project.intro}
+                   onChange={(e) => onUpdate(index, 'intro', e.target.value)} />
             <div style={{ height: 5 }}></div>
             <SkillSearchComponent 
                     singleSelection={true}
@@ -212,9 +265,10 @@ const ProjectRecord = ({ index, project, onRemove, onUpdate, resumeId }) => {
                     theme="snow"
                     modules={modules}
                     formats={formats}
-                    style={{width: 630, height:60, marginTop:3}}
-                    onChange={(content) => onUpdate(index, 'description', content)}
+                    style={{width: 630, height:100, marginTop:3}}
+                    onChange={handleQuillChange}
                     value={project.description}
+                    ref={quillRef}
                 />}
             </div>
         </Border>

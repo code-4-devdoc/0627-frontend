@@ -1,8 +1,16 @@
 import React, { useState } from 'react';
-import styled from "styled-components";
+import styled, {createGlobalStyle} from "styled-components";
 import { call } from "../../../service/ApiService";
 
 // LanguageRecord.js: 개별 Language 항목의 입력을 처리하고 관리
+
+const GlobalStyle = createGlobalStyle`
+  @media print {
+      .remove-btn {
+          display: none !important;
+      }
+  }
+`;
 
 const Border = styled.div`
     border-style: solid;
@@ -56,9 +64,11 @@ const LanguageRecord = ({ index, language, onRemove, onUpdate, resumeId }) => {
     };
 
     return (
+        <>
         <Border>
-            <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <button style={{
+            <div style={{ display: "flex", justifyContent: "flex-end", height: 20}}>
+                <button className="remove-btn"
+                    style={{
                     cursor: "pointer",
                     borderRadius: "0px 8px 0px 3px",
                     width: 30,
@@ -79,6 +89,7 @@ const LanguageRecord = ({ index, language, onRemove, onUpdate, resumeId }) => {
                 </div>
             </div>
         </Border>
+        </>
     );
 };
 

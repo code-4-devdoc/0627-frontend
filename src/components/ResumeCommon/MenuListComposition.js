@@ -6,6 +6,15 @@ import Popper from '@mui/material/Popper';
 import MenuItem from '@mui/material/MenuItem';
 import MenuList from '@mui/material/MenuList';
 import Stack from '@mui/material/Stack';
+import {createGlobalStyle} from "styled-components";
+
+const GlobalStyle = createGlobalStyle`
+  @media print {
+      #composition-button {
+          display: none !important;
+      }
+  }
+`;
 
 const MenuListComposition = ({ menuTitle, menuItems, onSelect, selected }) => {
     const [open, setOpen] = React.useState(false);
@@ -51,6 +60,8 @@ const MenuListComposition = ({ menuTitle, menuItems, onSelect, selected }) => {
     }, [selected, menuTitle]);
 
     return (
+        <>
+            <GlobalStyle />
         <Stack direction="row" spacing={2}>
             <div style={{ borderStyle: "solid", borderWidth: 1, borderColor: "#ccc", borderRadius: 4, padding: 7 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", gap: 5 }}>
@@ -104,6 +115,7 @@ const MenuListComposition = ({ menuTitle, menuItems, onSelect, selected }) => {
                 </Popper>
             </div>
         </Stack>
+            </>
     );
 }
 
