@@ -106,19 +106,22 @@ const TrainingRecord = ({index, training, onRemove, onUpdate, resumeId}) => {
                 }} onClick={handleRemove}>-
                 </button>
             </div>
-            <div style={{display: "flex", height: 35, alignItems: "center", marginTop: 5, gap: 5}}>
+            <div style={{display: "flex", alignItems: "center", marginTop: 5}}>
+                <div style={{display:"flex", height: error ? 55 : 35 , gap: 5}}>
                 <Input
-                    style={{width: 150}}
+                    style={{width: 150, height: 18}}
                     placeholder="교육명"
                     value={training.courseName}
                     onChange={(e) => handleInputChange('courseName', e.target.value)}
                 />
                 <Input
-                    style={{width: 150}}
+                    style={{width: 150, height: 18}}
                     placeholder="교육 기관"
                     value={training.institution}
                     onChange={(e) => handleInputChange('institution', e.target.value)}
                 />
+                </div>
+                <div>
                 <div style={{display: "flex", gap: 5, alignItems: "center", marginLeft: 5}}>
                     <Input style={{width: 70}} placeholder="YYYY.MM" value={training.startDate}
                            onChange={(e) => handleStartDateChange(e.target.value)}/>
@@ -140,7 +143,8 @@ const TrainingRecord = ({index, training, onRemove, onUpdate, resumeId}) => {
                     >
                         진행 중
                     </div>
-                    {error && <div style={{fontSize: 13, color: 'rgba(202, 5, 5, 1)'}}>{error}</div>}
+                </div>
+                    {error && <div className="error" style={{fontSize: 13, color: 'rgba(202, 5, 5, 1)', marginLeft: 5, marginTop: 2}}>{error}</div>}
                 </div>
             </div>
         </Border>

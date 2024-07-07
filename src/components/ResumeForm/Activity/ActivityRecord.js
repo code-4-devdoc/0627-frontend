@@ -102,46 +102,51 @@ const ActivityRecord = ({ index, activity, onRemove, onUpdate, resumeId }) => {
                 }} onClick={handleRemove}>-
                 </button>
             </div>
-            <div style={{ display: "flex", height: 35, alignItems: "center", marginTop: 5, gap: 5 }}>
-                <Input
-                    style={{ width: 150 }}
-                    placeholder="활동명"
-                    value={activity.activityName}
-                    onChange={(e) => handleInputChange('activityName', e.target.value)}
-                />
-                <Input
-                    style={{ width: 150 }}
-                    placeholder="활동 기관"
-                    value={activity.organizationName}
-                    onChange={(e) => handleInputChange('organizationName', e.target.value)}
-                />
-                <div style={{display: "flex", gap: 5, alignItems: "center", marginLeft: 5}}>
-                    <Input style={{width: 70}} placeholder="YYYY.MM" value={activity.startDate}
-                           onChange={(e) => handleStartDateChange(e.target.value)}/>
-                    <span>-</span>
+            <div style={{display: "flex", alignItems: "center", marginTop: 5}}>
+                <div style={{display: "flex", height: error ? 55 : 35, gap: 5}}>
                     <Input
-                        style={{width: 70}}
-                        placeholder={isChecked ? "N/A" : "YYYY.MM"}
-                        disabled={isChecked}
-                        value={isChecked ? "N/A" : activity.endDate}
-                        onChange={(e) => handleEndDateChange(e.target.value)}
+                        style={{width: 150, height: 18}}
+                        placeholder="활동명"
+                        value={activity.activityName}
+                        onChange={(e) => handleInputChange('activityName', e.target.value)}
                     />
-                    <div className="checkbox-label">
-                        <CheckboxLabels option={checkboxOption} checked={isChecked}
-                                        onChange={handleCheckboxChange}></CheckboxLabels>
-                    </div>
-                    <div
-                        className={isChecked ? "activity-status" : "activity-status-hidden"}
-                        style={{display: 'none', marginLeft: 10}}
-                    >
-                        진행 중
-                    </div>
-                    {error && <div style={{fontSize: 13, color: 'rgba(202, 5, 5, 1)'}}>{error}</div>}
+                    <Input
+                        style={{width: 150, height: 18}}
+                        placeholder="활동 기관"
+                        value={activity.organizationName}
+                        onChange={(e) => handleInputChange('organizationName', e.target.value)}
+                    />
                 </div>
-            </div>
+                <div>
+                    <div style={{display: "flex", gap: 5, alignItems: "center", marginLeft: 5}}>
+                        <Input style={{width: 70}} placeholder="YYYY.MM" value={activity.startDate}
+                               onChange={(e) => handleStartDateChange(e.target.value)}/>
+                        <span>-</span>
+                        <Input
+                            style={{width: 70}}
+                            placeholder={isChecked ? "N/A" : "YYYY.MM"}
+                            disabled={isChecked}
+                            value={isChecked ? "N/A" : activity.endDate}
+                            onChange={(e) => handleEndDateChange(e.target.value)}
+                        />
+                        <div className="checkbox-label">
+                            <CheckboxLabels option={checkboxOption} checked={isChecked}
+                                            onChange={handleCheckboxChange}></CheckboxLabels>
+                        </div>
+                        <div
+                            className={isChecked ? "activity-status" : "activity-status-hidden"}
+                            style={{display: 'none', marginLeft: 10}}
+                        >
+                            진행 중
+                        </div>
+                    </div>
+                    {error && <div className="error" style={{fontSize: 13, color: 'rgba(202, 5, 5, 1)', marginLeft: 5, marginTop: 2}}>{error}</div>}
+                </div>
+
+                </div>
         </Border>
         </>
-    );
+);
 };
 
 export default ActivityRecord;

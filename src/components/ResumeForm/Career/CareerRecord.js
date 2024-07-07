@@ -8,7 +8,7 @@ import 'react-quill/dist/quill.snow.css';
 
 const GlobalStyle = createGlobalStyle`
   @media print {
-      .add-quill-btn, .remove-btn,
+      .add-quill-btn, .remove-btn, .error,
       .ql-toolbar, .checkbox-label {
           display: none !important;
       }
@@ -231,28 +231,32 @@ const CareerRecord = ({ body, setBody, index, career, onRemove, onUpdate, resume
                        onChange={(e) => onUpdate(index, 'company', e.target.value)}/>
                 <Input placeholder="부서명/직책" value={career.department}
                        onChange={(e) => onUpdate(index, 'department', e.target.value)}/>
-                <div style={{display: "flex", alignItems: "center", gap: 5}}>
-                    <Input style={{width: 70}} placeholder="YYYY.MM" value={career.startDate}
-                           onChange={(e) => handleStartDateChange(e.target.value)}/>
-                    <span>-</span>
-                    <Input
-                        style={{width: 70}}
-                        placeholder={isChecked ? "N/A" : "YYYY.MM"}
-                        disabled={isChecked}
-                        value={isChecked ? "N/A" : career.endDate}
-                        onChange={(e) => handleEndDateChange(e.target.value)}
-                    />
-                    <div className="checkbox-label">
-                        <CheckboxLabels option={checkboxOption} checked={isChecked}
-                                        onChange={handleCheckboxChange}></CheckboxLabels></div>
-                    <div
-                        className={isChecked ? "employment-status" : "employment-status-hidden"}
-                        style={{display: 'none', marginLeft: 10}}
-                    >
-                        재직 중
+
+                    <div>
+                        <div style={{display: "flex", alignItems: "center", gap: 5}}>
+                            <Input style={{width: 70}} placeholder="YYYY.MM" value={career.startDate}
+                                   onChange={(e) => handleStartDateChange(e.target.value)}/>
+                            <span>-</span>
+                            <Input
+                                style={{width: 70}}
+                                placeholder={isChecked ? "N/A" : "YYYY.MM"}
+                                disabled={isChecked}
+                                value={isChecked ? "N/A" : career.endDate}
+                                onChange={(e) => handleEndDateChange(e.target.value)}
+                            />
+                            <div className="checkbox-label">
+                                <CheckboxLabels option={checkboxOption} checked={isChecked}
+                                                onChange={handleCheckboxChange}></CheckboxLabels></div>
+                            <div
+                                className={isChecked ? "employment-status" : "employment-status-hidden"}
+                                style={{display: 'none', marginLeft: 10}}
+                            >
+                                재직 중
+                            </div>
+                        </div>
+                        {error && <div className="error" style={{fontSize: 13, color: 'rgba(202, 5, 5, 1)', marginLeft: 2, marginTop: 2}}>{error}</div>}
                     </div>
-                </div>
-                {error && <div style={{fontSize: 13, color: 'rgba(202, 5, 5, 1)'}}>{error}</div>}
+
             </div>
             <div style={{height: 5}}></div>
             <SkillSearchComponent

@@ -113,12 +113,12 @@ const AwardRecord = ({ index, award, onRemove, onUpdate, resumeId }) => {
                 }} onClick={handleRemove}>-
                 </button>
             </div>
-            <div style={{ display: "flex", height: 35, marginTop: 5, gap: 5 }}>
-                <Input style={{ width: 150 }} placeholder="수상명" value={award.awardName} onChange={(e) => handleInputChange('awardName', e.target.value)} />
-                <Input style={{ width: 150 }} placeholder="수상 기관" value={award.awardingInstitution} onChange={(e) => handleInputChange('awardingInstitution', e.target.value)} />
+            <div style={{ display: "flex", height: error ? 55 : 35, marginTop: 5, gap: 5 }}>
+                <Input style={{ width: 150, height: 18 }} placeholder="수상명" value={award.awardName} onChange={(e) => handleInputChange('awardName', e.target.value)} />
+                <Input style={{ width: 150, height: 18 }} placeholder="수상 기관" value={award.awardingInstitution} onChange={(e) => handleInputChange('awardingInstitution', e.target.value)} />
                 <div>
                     <Input style={{ width: 70 }} placeholder="YYYY.MM" value={award.date} onChange={(e) => handleDateChange(e.target.value)} />
-                    {error && <div style={{ fontSize: 13, color: 'rgba(202, 5, 5, 1)' }}>{error}</div>}
+                    {error && <div className="error" style={{fontSize: 13, color: 'rgba(202, 5, 5, 1)', marginLeft: 2, marginTop: 2}}>{error}</div>}
                 </div>
             </div>
             <div style={{ marginTop: 5 }}>
