@@ -11,12 +11,12 @@ import { call } from "../../../service/ApiService";
 
 const GlobalStyle = createGlobalStyle`
     @media print {
-        .toggle-button, .image-input-btn {
-            display: none;
-        }
-        .image-preview {
-            display: block !important; /* Ensure image-preview is visible */
-        }
+      .toggle-button, .image-input-btn {
+          display: none;
+      }  
+      .image-preview {
+          display: block !important; /* Ensure image-preview is visible */
+       }
         .hidden-print, .image-container-no-image {
             display: none !important;
         }
@@ -55,32 +55,19 @@ const Button = styled.button`
 `;
 
 const ImagePreview = styled.img`
-    width: 152px;
-    height: 202px;
+    width: 120px;
+    height: 180px;
     object-fit: cover;
 `;
 
 const ImageContainer = styled.div`
     display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 152px;
-    height: 202px;
-    border: 1px dashed rgba(239, 245, 255, 1);
-    position: relative;
-`;
-
-const InputContainer = styled.div`
-    display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    margin-right: 40px;
-
-    @media print {
-        &.print-center {
-            justify-content: center;
-        }
-    }
+    align-items: center;
+    justify-content: center;
+    border-style: dashed;
+    border-color: rgba(239, 245, 255, 1);
+    padding: 10px 0 10px 0;
 `;
 
 const HiddenFileInput = styled.input`
@@ -95,6 +82,19 @@ const FileInputLabel = styled.label`
     cursor: pointer;
     margin-top: 10px;
     display: inline-block;
+`;
+
+const InputContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin-right: 40px;
+
+    @media print {
+        &.print-center {
+            justify-content: center;
+        }
+    }
 `;
 
 function useInputValidation(initialValue, pattern) {
@@ -117,14 +117,13 @@ function useInputValidation(initialValue, pattern) {
 }
 
 const AboutMe = ({ aboutMe, setAboutMe, resumeId }) => {
-    const [imagePreviewUrl, setImagePreviewUrl] = useState(aboutMe?.photo || '');
+    const [imagePreviewUrl, setImagePreviewUrl] = useState('');
 
     useEffect(() => {
         const fetchAboutMe = async () => {
             try {
                 const response = await call(`/api/resumes/${resumeId}/aboutMes`, 'GET', null);
                 setAboutMe(response);
-                initializeActiveFields(response);
             } catch (error) {
                 console.error("Failed to fetch aboutMe", error);
             }
@@ -132,24 +131,6 @@ const AboutMe = ({ aboutMe, setAboutMe, resumeId }) => {
 
         fetchAboutMe();
     }, [resumeId, setAboutMe]);
-
-    const initializeActiveFields = (data) => {
-        setIsActive({
-            phone: Boolean(data.phoneNumber),
-            email: Boolean(data.email),
-            githubAddress: Boolean(data.github),
-            blogAddress: Boolean(data.blog),
-            selfIntroduction: Boolean(data.introduction),
-            birthday: Boolean(data.birthday)
-        });
-
-        phoneInput.setValue(data.phoneNumber || '');
-        emailInput.setValue(data.email || '');
-        birthdayInput.setValue(data.birthday || '');
-        githubInput.setValue(data.github || '');
-        blogInput.setValue(data.blog || '');
-        introInput.setValue(data.introduction || '');
-    };
 
     const handleInputChange = (field, value) => {
         setAboutMe(prev => ({
@@ -166,7 +147,6 @@ const AboutMe = ({ aboutMe, setAboutMe, resumeId }) => {
 
         reader.onloadend = () => {
             setImagePreviewUrl(reader.result);
-            handleInputChange('photo', reader.result);
         }
 
         reader.readAsDataURL(file);
@@ -196,8 +176,8 @@ const AboutMe = ({ aboutMe, setAboutMe, resumeId }) => {
     const phoneInput = useInputValidation(aboutMe?.phoneNumber || '', /^\d{3}-\d{4}-\d{4}$/);
     const emailInput = useInputValidation(aboutMe?.email || '', /^[a-zA-Z0-9.]+@[a-z]+\.[a-z]+$/);
     const birthdayInput = useInputValidation(aboutMe?.birthday || '', /^\d{4}\.\d{2}\.\d{2}$/);
-    const githubInput = useInputValidation(aboutMe?.github || '', /^[\s\S]*$/);
-    const blogInput = useInputValidation(aboutMe?.blog || '', /^[\s\S]*$/);
+    const githubInput = useInputValidation(aboutMe?.github || '', /^https:\/\/github\.com\/([a-zA-Z0-9_-]+\/?[a-zA-Z0-9_-]*\/?)*$/);
+    const blogInput = useInputValidation(aboutMe?.blog || '', /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/);
     const introInput = useInputValidation(aboutMe?.introduction || '', /^[\s\S]*$/);
 
     const handleIntroductionChange = (e) => {
@@ -212,9 +192,9 @@ const AboutMe = ({ aboutMe, setAboutMe, resumeId }) => {
 
     return (
         <>
-            <GlobalStyle />
+            <GlobalStyle/>
             <SectionContainer title="About Me">
-                <div style={{ display: "flex", paddingTop: 10, justifyContent: 'space-between', marginRight: 40, position: "relative" }}>
+                <div style={{ display: "flex", paddingTop: 10, justifyContent:'space-between', marginRight: 40 }}>
                     <InputContainer className="print-center">
                         <Input
                             placeholder="이름"
@@ -307,9 +287,13 @@ const AboutMe = ({ aboutMe, setAboutMe, resumeId }) => {
                                 }}
                             />
                         </div>
+
                     </InputContainer>
                     <div>
-                        <FileInputLabel htmlFor="imageUpload" className="image-input-btn" style={{ display: imagePreviewUrl ? 'none' : 'inline-block' }}>사진 첨부</FileInputLabel>
+                        <input className="image-input-btn" type="file" style={{ display: 'none' }} />
+                        {!imagePreviewUrl && (
+                            <FileInputLabel htmlFor="imageUpload">사진 첨부</FileInputLabel>
+                        )}
                         <HiddenFileInput id="imageUpload" type="file" onChange={handleImageChange} accept="image/*" />
                         {imagePreviewUrl && (
                             <ImageContainer className="image-container">
@@ -322,7 +306,7 @@ const AboutMe = ({ aboutMe, setAboutMe, resumeId }) => {
                 <div style={{ display: "flex", marginLeft: 39 }}>
                     <div className={!isActive.selfIntroduction ? 'hidden-print' : ''}>
                         <Input
-                            style={{ width: 600, height: 75, fontFamily: "inherit", lineHeight: 1.5 }}
+                            style={{width: 600, height: 75, fontFamily: "inherit", lineHeight: 1.5}}
                             as="textarea"
                             rows={4}
                             placeholder="자기소개를 입력하세요."
@@ -333,17 +317,12 @@ const AboutMe = ({ aboutMe, setAboutMe, resumeId }) => {
                             onChange={handleIntroductionChange}
                         />
                         {(isActive.selfIntroduction && !introInput.isValid) && (
-                            <p style={{ color: 'rgba(202, 5, 5, 1)', marginTop: -8, marginBottom: 7, fontSize: 13 }}>
+                            <p style={{color: 'rgba(202, 5, 5, 1)', marginTop: -8, marginBottom: 7, fontSize: 13}}>
                                 입력을 확인해 주세요.
                             </p>
                         )}
                     </div>
-                    <Button
-                        className="toggle-button"
-                        onClick={() => toggleActive('selfIntroduction', introInput)}
-                        active={isActive.selfIntroduction}
-                        title="입력란이 활성화된 상태에서만 출력창에 해당 입력란이 표시됩니다"
-                    >
+                    <Button className="toggle-button" onClick={() => toggleActive('selfIntroduction', introInput)} active={isActive.selfIntroduction}>
                         {isActive.selfIntroduction ? '-' : '+'}
                     </Button>
                 </div>
