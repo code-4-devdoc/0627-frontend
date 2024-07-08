@@ -7,9 +7,10 @@ const Container = styled.div`
     margin-bottom: 40px;
     border-radius: 5px;
     width: 700px;
-    
+
     @media print {
-        margin-bottom: 20px; /* 인쇄 시 항목 간의 간격을 줄이기 위해 수정 */
+        margin-bottom: 30px;
+        page-break-inside: avoid;
     }
 `;
 
@@ -25,6 +26,10 @@ const SectionTitle = styled.div`
     align-items: center;
     padding-left: 25px;
     font-weight: 500;
+    @media print {
+        margin-left: 40px;
+        page-break-after: avoid;
+    }
 `;
 
 const SectionContainer = ({ title, children }) => (

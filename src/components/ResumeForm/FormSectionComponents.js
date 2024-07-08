@@ -22,7 +22,7 @@ const formSectionComponents = {
     'Certificate': Certificate,
     'Training': Training,
     'Language': Language,
-    'Activity': Activity,
+    'Activity': Activity
 
 };
 

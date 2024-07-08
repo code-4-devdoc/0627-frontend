@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from 'react-router-dom';
+import React, {useEffect, useRef, useState} from "react";
+import {useNavigate, useParams} from 'react-router-dom';
 import './ResumePage.css';
 import ResumeNav from "../../components/ResumeCommon/ResumeNav";
 import styled from "styled-components";
 import CategoryList from "../../components/ResumeCategory/CategoryList";
 import FormContent from "../../components/ResumeForm/FormContent";
-import { call } from "../../service/ApiService";
-import { kogptService } from "../../service/kogptService";
-import axios from "axios";
-import {TextField, Button, CircularProgress, Typography, Box, Paper, Collapse, IconButton} from '@mui/material';
+import {call} from "../../service/ApiService";
+import {kogptService} from "../../service/kogptService";
+import {Box, Button, CircularProgress, Collapse, IconButton, Paper, TextField, Typography} from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import kakaoBrainLogo from '../../assets/kakaobrain-logo.png';
@@ -18,7 +17,7 @@ import kakaoBrainLogo from '../../assets/kakaobrain-logo.png';
 const CategoryContainer = styled.div`
     margin-left: 20px;
     width: 400px;
-    height: 630px;
+    height: 592px;
     background-color: rgba(0, 30, 89, 1);
 `;
 
@@ -154,6 +153,7 @@ function ResumePage({ baseUrl }) {
                 aboutMe: aboutMe,
                 educations: educations
             };
+            console.log(data)
 
             await call(`/api/resumes/${resumeId}/save`, "POST", data);
 
@@ -164,14 +164,12 @@ function ResumePage({ baseUrl }) {
         }
     };
 
-    // PDF 인쇄, 저장, 미리보기
+    const printRef = useRef(null);
     const handlePrint = () => {
         window.print();
     };
 
-    const handleRemoveBlankSection = (index) => {
-        setActiveSections(prevSections => prevSections.filter((_, i) => i !== index));
-    };
+
 
     const [prompt, setPrompt] = useState('');
     const [maxTokens, setMaxTokens] = useState(50); // default value for maxTokens
@@ -202,15 +200,11 @@ function ResumePage({ baseUrl }) {
 
     const promptExamples = [
         `KoGPT를 사용하여 경력 항목을 작성하려면 다음과 같은 프롬프트를 사용해 보세요:
-        "...(경력 요약)... 위와 같은 내용을 바탕으로 이전 직장에서 맡았던 역할과 주요 성과를 설명해 주세요."`,
-        `KoGPT를 사용하여 기술 항목을 작성하려면 다음과 같은 프롬프트를 사용해 보세요:
-        "...(기술 요약)... 위와 같은 내용을 바탕으로 보유한 기술과 사용 경험을 간략히 나열해 주세요."`,
+        "...(경력 요약 - 기업 소개, 역할, 사용한 기술, 성과)... 위와 같은 내용을 바탕으로 이전 직장에서 맡았던 역할과 주요 성과를 설명해 주세요."`,
+        `KoGPT를 사용하여 기술 스택 항목을 작성하려면 다음과 같은 프롬프트를 사용해 보세요:
+        "...(기술 요약 - 보유 기술, 사용 경험)... 위와 같은 내용을 바탕으로 보유 중인 기술의 숙련도와 경험을 자세히 설명해 주세요."`,
         `KoGPT를 사용하여 프로젝트 항목을 작성하려면 다음과 같은 프롬프트를 사용해 보세요:
-        "...(프로젝트 요약)... 위와 같은 내용을 바탕으로 참여한 프로젝트의 이름, 기간, 사용 기술, 그리고 나의 기여도를 설명해 주세요."`,
-        `KoGPT를 사용하여 수상 경력 항목을 작성하려면 다음과 같은 프롬프트를 사용해 보세요:
-        "...(수상 경력 요약)... 위와 같은 내용을 바탕으로 수상한 경력과 관련된 세부 사항을 제공해 주세요."`,
-        `KoGPT를 사용하여 [ ] 항목을 작성하려면 다음과 같은 프롬프트를 사용해 보세요:
-        "...([ ] 요약)... 위와 같은 내용을 바탕으로 [ ] 주세요."`
+        "...(프로젝트 요약 - 주제, 사용한 기술, 역할, 성과)... 위와 같은 내용을 바탕으로 프로젝트, 역할, 성과에 대해 자세히 설명해 주세요."`
     ];
 
     const togglePromptGuide = () => {
@@ -290,10 +284,10 @@ function ResumePage({ baseUrl }) {
                         </Box>
                     </GptContainer>
                 </div>
-                <div className="form-container">
+                <div className="form-container" ref={printRef}>
                     <div id="printContent" style={{ width: '100%',  background: 'white', margin: '0 auto' }}>
                         <div style={{ display: 'flex', justifyContent: 'center', marginTop: 30, marginBottom: 10 }}>
-                            <ResumeTitle type="text" value={resumeTitle} onChange={handleTitleChange} placeholder="이력서의 제목을 입력하세요."/>
+                            <ResumeTitle type="text" value={resumeTitle} placeholder={"이력서의 제목을 작성하세요."} onChange={handleTitleChange}/>
                         </div>
                         <FormContent
                             activeSections={activeSections}
@@ -309,7 +303,6 @@ function ResumePage({ baseUrl }) {
                             certificates={certificates} setCertificates={setCertificates}
                             languages={languages} setLanguages={setLanguages}
                             resumeId={resumeId}
-                            onRemoveBlankSection={handleRemoveBlankSection}
                         />
                     </div>
                 </div>

@@ -11,8 +11,7 @@ const sections = [
     { name: 'Activity', detail: '대외 활동' },
     { name: 'Award', detail: '수상 이력' },
     { name: 'Certificate', detail: '자격증' },
-    { name: 'Language', detail: '어학' },
-    { name: 'Blank', detail: '빈 항목' } // 빈 항목 추가
+    { name: 'Language', detail: '어학' }
 ];
 
 const CategoryList = ({ onSectionChange, activeSections }) => {

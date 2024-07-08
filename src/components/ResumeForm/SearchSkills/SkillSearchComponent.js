@@ -2,7 +2,15 @@ import React, { useState } from 'react';
 import Modal from 'react-modal';
 import SkillSelectorModal from "./SkillSelectorModal";
 import { icons as skillsData } from '../../../assets/icons';
-import styled from "styled-components";
+import styled, {createGlobalStyle} from "styled-components";
+
+const GlobalStyle = createGlobalStyle`
+    @media print {
+        .search-btn {
+            display: none;
+        }
+    }
+`;
 
 const Button = styled.div`
     min-width: 35px;
@@ -65,24 +73,27 @@ const SkillSearchComponent = ({ singleSelection = false, onSkillChange, selected
     };
 
     return (
-        <div style={{ display: "flex", alignItems: "center" }}>
-            <Button onClick={openModal}>검색</Button>
-            {selectedSkills && (
-                <SkillsContainer>
-                    {selectedSkills.split(', ').map((skillIcon, index) => (
-                        <div key={index} onClick={() => handleRemoveSkill(skillIcon)} style={{ cursor: 'pointer', width: 40, height: 40, position: 'relative' }}>
-                            <img src={skillIcon} alt={`skill-${index}`} style={{ width: '100%', height: '100%' }} />
-                        </div>
-                    ))}
-                </SkillsContainer>
-            )}
-            <SkillSelectorModal
-                isOpen={modalIsOpen}
-                closeModal={closeModal}
-                selectSkill={handleSelectSkill}
-                skillsData={skillsData}
-            />
-        </div>
+        <>
+            <GlobalStyle/>
+            <div style={{ display: "flex", alignItems: "center" }}>
+                <Button className="search-btn" onClick={openModal}>검색</Button>
+                {selectedSkills && (
+                    <SkillsContainer>
+                        {selectedSkills.split(', ').map((skillIcon, index) => (
+                            <div key={index} onClick={() => handleRemoveSkill(skillIcon)} style={{ cursor: 'pointer', width: 40, height: 40, position: 'relative' }}>
+                                <img src={skillIcon} alt={`skill-${index}`} style={{ width: '100%', height: '100%' }} />
+                            </div>
+                        ))}
+                    </SkillsContainer>
+                )}
+                <SkillSelectorModal
+                    isOpen={modalIsOpen}
+                    closeModal={closeModal}
+                    selectSkill={handleSelectSkill}
+                    skillsData={skillsData}
+                />
+            </div>
+        </>
     );
 };
 

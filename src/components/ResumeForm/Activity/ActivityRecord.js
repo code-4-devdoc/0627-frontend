@@ -1,7 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import CheckboxLabels from "../../ResumeCommon/CheckboxLabels";
-import styled from "styled-components";
+import styled, {createGlobalStyle} from "styled-components";
 import { call } from "../../../service/ApiService";
+
+const GlobalStyle = createGlobalStyle`
+  @media print {
+      .remove-btn {
+          display: none !important;
+      }
+      .activity-status {
+          display: block !important;
+      }
+      .activity-status-hidden {
+          display: none !important;
+      }
+  }
+`;
 
 const Border = styled.div`
     border-style: solid;
@@ -71,47 +85,67 @@ const ActivityRecord = ({ index, activity, onRemove, onUpdate, resumeId }) => {
     };
 
     return (
-        <Border>
-            <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <button style={{
-                    cursor: "pointer",
-                    borderRadius: "0px 8px 0px 3px",
-                    width: 30,
-                    height: 20,
-                    backgroundColor: "rgba(18, 73, 156, 50%)",
-                    color: "white",
-                    border: "none"
-                }} onClick={handleRemove}>-
-                </button>
-            </div>
-            <div style={{ display: "flex", height: 35, alignItems: "center", marginTop: 5, gap: 5 }}>
-                <Input
-                    style={{ width: 150 }}
-                    placeholder="활동명"
-                    value={activity.activityName}
-                    onChange={(e) => handleInputChange('activityName', e.target.value)}
-                />
-                <Input
-                    style={{ width: 150 }}
-                    placeholder="활동 기관"
-                    value={activity.organizationName}
-                    onChange={(e) => handleInputChange('organizationName', e.target.value)}
-                />
-                <div style={{ display: "flex", gap: 5, alignItems: "center", marginLeft: 5 }}>
-                    <Input style={{ width: 70 }} placeholder="YYYY.MM" value={activity.startDate} onChange={(e) => handleStartDateChange(e.target.value)} />
-                    <span>-</span>
-                    <Input
-                        style={{ width: 70 }}
-                        placeholder={isChecked ? "N/A" : "YYYY.MM"}
-                        disabled={isChecked}
-                        value={isChecked ? "N/A" : activity.endDate}
-                        onChange={(e) => handleEndDateChange(e.target.value)}
-                    />
-                    <CheckboxLabels option={checkboxOption} checked={isChecked} onChange={handleCheckboxChange}></CheckboxLabels>
-                    {error && <div style={{ fontSize: 13, color: 'rgba(202, 5, 5, 1)' }}>{error}</div>}
+        <>
+            <GlobalStyle />
+            <Border>
+                <div style={{ display: "flex", justifyContent: "flex-end", height: 20 }}>
+                    <button
+                        className="remove-btn"
+                        style={{
+                            cursor: "pointer",
+                            borderRadius: "0px 8px 0px 3px",
+                            width: 30,
+                            height: 20,
+                            backgroundColor: "rgba(18, 73, 156, 50%)",
+                            color: "white",
+                            border: "none"
+                        }} onClick={handleRemove}>-
+                    </button>
                 </div>
-            </div>
-        </Border>
+                <div style={{display: "flex", alignItems: "center", marginTop: 5}}>
+                    <div style={{display: "flex", height: error ? 55 : 35, gap: 5}}>
+                        <Input
+                            style={{width: 150, height: 18}}
+                            placeholder="활동명"
+                            value={activity.activityName}
+                            onChange={(e) => handleInputChange('activityName', e.target.value)}
+                        />
+                        <Input
+                            style={{width: 150, height: 18}}
+                            placeholder="활동 기관"
+                            value={activity.organizationName}
+                            onChange={(e) => handleInputChange('organizationName', e.target.value)}
+                        />
+                    </div>
+                    <div>
+                        <div style={{display: "flex", gap: 5, alignItems: "center", marginLeft: 5}}>
+                            <Input style={{width: 70}} placeholder="YYYY.MM" value={activity.startDate}
+                                   onChange={(e) => handleStartDateChange(e.target.value)}/>
+                            <span>-</span>
+                            <Input
+                                style={{width: 70}}
+                                placeholder={isChecked ? "N/A" : "YYYY.MM"}
+                                disabled={isChecked}
+                                value={isChecked ? "N/A" : activity.endDate}
+                                onChange={(e) => handleEndDateChange(e.target.value)}
+                            />
+                            <div className="checkbox-label">
+                                <CheckboxLabels option={checkboxOption} checked={isChecked}
+                                                onChange={handleCheckboxChange}></CheckboxLabels>
+                            </div>
+                            <div
+                                className={isChecked ? "activity-status" : "activity-status-hidden"}
+                                style={{display: 'none', marginLeft: 10}}
+                            >
+                                진행 중
+                            </div>
+                        </div>
+                        {error && <div className="error" style={{fontSize: 13, color: 'rgba(202, 5, 5, 1)', marginLeft: 5, marginTop: 2}}>{error}</div>}
+                    </div>
+
+                </div>
+            </Border>
+        </>
     );
 };
 

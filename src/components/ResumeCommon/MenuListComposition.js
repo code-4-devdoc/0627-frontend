@@ -6,6 +6,15 @@ import Popper from '@mui/material/Popper';
 import MenuItem from '@mui/material/MenuItem';
 import MenuList from '@mui/material/MenuList';
 import Stack from '@mui/material/Stack';
+import {createGlobalStyle} from "styled-components";
+
+const GlobalStyle = createGlobalStyle`
+  @media print {
+      #composition-button {
+          display: none !important;
+      }
+  }
+`;
 
 const MenuListComposition = ({ menuTitle, menuItems, onSelect, selected }) => {
     const [open, setOpen] = React.useState(false);
@@ -51,59 +60,62 @@ const MenuListComposition = ({ menuTitle, menuItems, onSelect, selected }) => {
     }, [selected, menuTitle]);
 
     return (
-        <Stack direction="row" spacing={2}>
-            <div style={{ borderStyle: "solid", borderWidth: 1, borderColor: "#ccc", borderRadius: 4, padding: 7 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", gap: 5 }}>
-                    <span>{selectedTitle}</span>
-                    <button
-                        ref={anchorRef}
-                        id="composition-button"
-                        aria-controls={open ? 'composition-menu' : undefined}
-                        aria-expanded={open ? 'true' : undefined}
-                        aria-haspopup="true"
-                        onClick={handleToggle}
-                        style={{ backgroundColor: "grey", color: "white", border: "none", borderRadius: 7, width: 20, cursor: "pointer" }}
-                    >
-                        v
-                    </button>
-                </div>
-                <Popper
-                    open={open}
-                    anchorEl={anchorRef.current}
-                    role={undefined}
-                    placement="bottom-start"
-                    transition
-                    disablePortal
-                >
-                    {({ TransitionProps, placement }) => (
-                        <Grow
-                            {...TransitionProps}
-                            style={{
-                                transformOrigin:
-                                    placement === 'bottom-start' ? 'left top' : 'left bottom',
-                            }}
+        <>
+            <GlobalStyle />
+            <Stack direction="row" spacing={2}>
+                <div style={{ borderStyle: "solid", borderWidth: 1, borderColor: "#ccc", borderRadius: 4, padding: 7 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", gap: 5 }}>
+                        <span>{selectedTitle}</span>
+                        <button
+                            ref={anchorRef}
+                            id="composition-button"
+                            aria-controls={open ? 'composition-menu' : undefined}
+                            aria-expanded={open ? 'true' : undefined}
+                            aria-haspopup="true"
+                            onClick={handleToggle}
+                            style={{ backgroundColor: "grey", color: "white", border: "none", borderRadius: 7, width: 20, cursor: "pointer" }}
                         >
-                            <Paper>
-                                <ClickAwayListener onClickAway={handleClose}>
-                                    <MenuList
-                                        autoFocusItem={open}
-                                        id="composition-menu"
-                                        aria-labelledby="composition-button"
-                                        onKeyDown={handleListKeyDown}
-                                    >
-                                        {menuItems.map((item) => (
-                                            <MenuItem key={item} onClick={(event) => handleMenuItemClick(event, item)}>
-                                                {item}
-                                            </MenuItem>
-                                        ))}
-                                    </MenuList>
-                                </ClickAwayListener>
-                            </Paper>
-                        </Grow>
-                    )}
-                </Popper>
-            </div>
-        </Stack>
+                            v
+                        </button>
+                    </div>
+                    <Popper
+                        open={open}
+                        anchorEl={anchorRef.current}
+                        role={undefined}
+                        placement="bottom-start"
+                        transition
+                        disablePortal
+                    >
+                        {({ TransitionProps, placement }) => (
+                            <Grow
+                                {...TransitionProps}
+                                style={{
+                                    transformOrigin:
+                                        placement === 'bottom-start' ? 'left top' : 'left bottom',
+                                }}
+                            >
+                                <Paper>
+                                    <ClickAwayListener onClickAway={handleClose}>
+                                        <MenuList
+                                            autoFocusItem={open}
+                                            id="composition-menu"
+                                            aria-labelledby="composition-button"
+                                            onKeyDown={handleListKeyDown}
+                                        >
+                                            {menuItems.map((item) => (
+                                                <MenuItem key={item} onClick={(event) => handleMenuItemClick(event, item)}>
+                                                    {item}
+                                                </MenuItem>
+                                            ))}
+                                        </MenuList>
+                                    </ClickAwayListener>
+                                </Paper>
+                            </Grow>
+                        )}
+                    </Popper>
+                </div>
+            </Stack>
+        </>
     );
 }
 

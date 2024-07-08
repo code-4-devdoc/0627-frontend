@@ -1,6 +1,14 @@
 import React, {useState} from 'react';
-import styled from "styled-components";
+import styled, {createGlobalStyle} from "styled-components";
 import {call} from "../../../service/ApiService";
+
+const GlobalStyle = createGlobalStyle`
+  @media print {
+      .remove-btn {
+          display: none !important;
+      }
+  }
+`;
 
 const Border = styled.div`
     border-style: solid;
@@ -51,31 +59,36 @@ const CertificateRecord = ({index, certificate, onRemove, onUpdate, resumeId }) 
     };
 
     return (
-        <Border>
-            <div style={{display: "flex", justifyContent: "flex-end"}}>
-                <button style={{
-                    cursor: "pointer",
-                    borderRadius: "0px 8px 0px 3px",
-                    width: 30,
-                    height: 20,
-                    backgroundColor: "rgba(18, 73, 156, 50%)",
-                    color: "white",
-                    border: "none"
-                }} onClick={handleRemove}>-
-                </button>
-            </div>
-            <div style={{display: "flex", height: 35, marginTop: 5, gap: 5}}>
-                <Input style={{width: 150}} placeholder="자격증명"
-                       value={certificate.certificateName} onChange={(e) => handleInputChange('certificateName', e.target.value)}/>
-                <Input style={{width: 150}} placeholder="발행처"
-                       value={certificate.issuer} onChange={(e) => handleInputChange('issuer', e.target.value)}/>
-                <div>
-                    <Input style={{width: 70}} placeholder="YYYY.MM" value={certificate.issueDate}
-                           onChange={(e) => handleDateChange(e.target.value)}/>
-                    {error && <div style={{fontSize: 13, color: 'rgba(202, 5, 5, 1)'}}>{error}</div>}
+        <>
+            <GlobalStyle />
+            <Border>
+                <div style={{display: "flex", justifyContent: "flex-end", height: 20}}>
+                    <button
+                        className="remove-btn"
+                        style={{
+                            cursor: "pointer",
+                            borderRadius: "0px 8px 0px 3px",
+                            width: 30,
+                            height: 20,
+                            backgroundColor: "rgba(18, 73, 156, 50%)",
+                            color: "white",
+                            border: "none"
+                        }} onClick={handleRemove}>-
+                    </button>
                 </div>
-            </div>
-        </Border>
+                <div style={{display: "flex", height: 35, marginTop: 5, gap: 5}}>
+                    <Input style={{width: 150}} placeholder="자격증명"
+                           value={certificate.certificateName} onChange={(e) => handleInputChange('certificateName', e.target.value)}/>
+                    <Input style={{width: 150}} placeholder="발행처"
+                           value={certificate.issuer} onChange={(e) => handleInputChange('issuer', e.target.value)}/>
+                    <div>
+                        <Input style={{width: 70}} placeholder="YYYY.MM" value={certificate.issueDate}
+                               onChange={(e) => handleDateChange(e.target.value)}/>
+                        {error && <div style={{fontSize: 13, color: 'rgba(202, 5, 5, 1)'}}>{error}</div>}
+                    </div>
+                </div>
+            </Border>
+        </>
     );
 };
 

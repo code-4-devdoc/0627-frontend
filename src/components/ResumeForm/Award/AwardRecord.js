@@ -1,7 +1,14 @@
 import React, {useMemo, useState} from 'react';
-import styled from "styled-components";
+import styled, {createGlobalStyle} from "styled-components";
 import { call } from "../../../service/ApiService";
-import ReactQuill from "react-quill";
+
+const GlobalStyle = createGlobalStyle`
+  @media print {
+      .remove-btn {
+          display: none !important;
+      }
+  }
+`;
 
 const Border = styled.div`
     border-style: solid;
@@ -11,7 +18,7 @@ const Border = styled.div`
     margin-bottom: 10px;
     padding-left: 20px;
     padding-bottom: 20px;
-    height: 170px;
+    height: 135px;
 `;
 
 const Input = styled.input`
@@ -89,45 +96,41 @@ const AwardRecord = ({ index, award, onRemove, onUpdate, resumeId }) => {
     }, []);
 
     return (
-        <Border>
-            <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <button style={{
-                    cursor: "pointer",
-                    borderRadius: "0px 8px 0px 3px",
-                    width: 30,
-                    height: 20,
-                    backgroundColor: "rgba(18, 73, 156, 50%)",
-                    color: "white",
-                    border: "none"
-                }} onClick={handleRemove}>-
-                </button>
-            </div>
-            <div style={{ display: "flex", height: 35, marginTop: 5, gap: 5 }}>
-                <Input style={{ width: 150 }} placeholder="수상명" value={award.awardName} onChange={(e) => handleInputChange('awardName', e.target.value)} />
-                <Input style={{ width: 150 }} placeholder="수상 기관" value={award.awardingInstitution} onChange={(e) => handleInputChange('awardingInstitution', e.target.value)} />
-                <div>
-                    <Input style={{ width: 70 }} placeholder="YYYY.MM" value={award.date} onChange={(e) => handleDateChange(e.target.value)} />
-                    {error && <div style={{ fontSize: 13, color: 'rgba(202, 5, 5, 1)' }}>{error}</div>}
+        <>
+            <GlobalStyle/>
+            <Border>
+                <div style={{ display: "flex", justifyContent: "flex-end", height: 20 }}>
+                    <button
+                        className="remove-btn"
+                        style={{
+                            cursor: "pointer",
+                            borderRadius: "0px 8px 0px 3px",
+                            width: 30,
+                            height: 20,
+                            backgroundColor: "rgba(18, 73, 156, 50%)",
+                            color: "white",
+                            border: "none"
+                        }} onClick={handleRemove}>-
+                    </button>
                 </div>
-            </div>
-            <div style={{ marginTop: 5 }}>
-                {/*<Input as="textarea"*/}
-                {/*       style={{ width: 590, height: 50, fontFamily: "inherit" }}*/}
-                {/*       placeholder="부연 설명을 입력하세요."*/}
-                {/*       value={award.description}*/}
-                {/*       onChange={(e) => handleInputChange('description', e.target.value)}*/}
-                {/*/>*/}
-            </div>
-            <ReactQuill
-                theme="snow"
-                modules={modules}
-                formats={formats}
-                style={{width: 640, height:60}}
-                onChange={(content) => onUpdate(index, 'description', content)}
-                value={award.description}
-            />
-            <div></div>
-        </Border>
+                <div style={{ display: "flex", height: error ? 55 : 35, marginTop: 5, gap: 5 }}>
+                    <Input style={{ width: 150, height: 18 }} placeholder="수상명" value={award.awardName} onChange={(e) => handleInputChange('awardName', e.target.value)} />
+                    <Input style={{ width: 150, height: 18 }} placeholder="수상 기관" value={award.awardingInstitution} onChange={(e) => handleInputChange('awardingInstitution', e.target.value)} />
+                    <div>
+                        <Input style={{ width: 70 }} placeholder="YYYY.MM" value={award.date} onChange={(e) => handleDateChange(e.target.value)} />
+                        {error && <div className="error" style={{fontSize: 13, color: 'rgba(202, 5, 5, 1)', marginLeft: 2, marginTop: 2}}>{error}</div>}
+                    </div>
+                </div>
+                <div style={{ marginTop: 5 }}>
+                    <Input as="textarea"
+                           style={{ width: 590, height: 50, fontFamily: "inherit" }}
+                           placeholder="부연 설명을 입력하세요."
+                           value={award.description}
+                           onChange={(e) => handleInputChange('description', e.target.value)}
+                    />
+                </div>
+            </Border>
+        </>
     );
 };
 

@@ -1,8 +1,15 @@
 import React, {useMemo} from 'react';
-import styled from "styled-components";
+import styled, {createGlobalStyle} from "styled-components";
 import SkillSearchComponent from "../SearchSkills/SkillSearchComponent";
 import { call } from "../../../service/ApiService";
-import ReactQuill from "react-quill";
+
+const GlobalStyle = createGlobalStyle`
+  @media print {
+      .remove-btn {
+          display: none !important;
+      }
+  }
+`;
 
 const Border = styled.div`
     border-style: solid;
@@ -80,41 +87,38 @@ const SkillRecord = ({ index, skill, onRemove, onUpdate, resumeId }) => {
     }, []);
 
     return (
-        <Border>
-            <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <button style={{
-                    cursor: "pointer",
-                    borderRadius: "0px 8px 0px 3px",
-                    width: 30,
-                    height: 20,
-                    backgroundColor: "rgba(18, 73, 156, 50%)",
-                    color: "white",
-                    border: "none"
-                }} onClick={handleRemove}>-
-                </button>
-            </div>
-            <div style={{ height: 5 }}></div>
-            <div style={{ display: "flex", alignItems: 'center', gap: 15, paddingLeft: 0, paddingRight: 15, marginBottom: 5 }}>
-                <SkillSearchComponent
-                    singleSelection={true}
-                    selectedSkills={skill.techStack || ""}
-                    onSkillChange={(skills) => handleInputChange('techStack', skills)}
-                />
-                {/*<Input*/}
-                {/*    placeholder="부연 설명을 입력하세요."*/}
-                {/*    value={skill.description}*/}
-                {/*    onChange={(e) => handleInputChange('description', e.target.value)}*/}
-                {/*/>*/}
-                <ReactQuill
-                    theme="snow"
-                    modules={modules}
-                    formats={formats}
-                    style={{width: 550, height:60}}
-                    onChange={(content) => onUpdate(index, 'description', content)}
-                    value={skill.description}
-                />
-            </div>
-        </Border>
+        <>
+            <GlobalStyle />
+            <Border>
+                <div style={{ display: "flex", justifyContent: "flex-end", height: 20 }}>
+                    <button
+                        className="remove-btn"
+                        style={{
+                            cursor: "pointer",
+                            borderRadius: "0px 8px 0px 3px",
+                            width: 30,
+                            height: 20,
+                            backgroundColor: "rgba(18, 73, 156, 50%)",
+                            color: "white",
+                            border: "none"
+                        }} onClick={handleRemove}>-
+                    </button>
+                </div>
+                <div style={{ height: 5 }}></div>
+                <div style={{ display: "flex", alignItems: 'center', gap: 15, paddingLeft: 0, paddingRight: 15, marginBottom: 5 }}>
+                    <SkillSearchComponent
+                        singleSelection={true}
+                        selectedSkills={skill.techStack || ""}
+                        onSkillChange={(skills) => handleInputChange('techStack', skills)}
+                    />
+                    <Input
+                        placeholder="부연 설명을 입력하세요."
+                        value={skill.description}
+                        onChange={(e) => handleInputChange('description', e.target.value)}
+                    />
+                </div>
+            </Border>
+        </>
     );
 };
 
