@@ -287,7 +287,7 @@ function ResumePage({ baseUrl }) {
                 <div className="form-container" ref={printRef}>
                     <div id="printContent" style={{ width: '100%',  background: 'white', margin: '0 auto' }}>
                         <div style={{ display: 'flex', justifyContent: 'center', marginTop: 30, marginBottom: 10 }}>
-                            <ResumeTitle type="text" value={resumeTitle} placeholder={"이력서의 제목을 작성하세요."} onChange={handleTitleChange}/>
+                            <ResumeTitle type="text" value={resumeTitle} placeholder={"이력서의 제목을 입력하세요."} onChange={handleTitleChange}/>
                         </div>
                         <FormContent
                             activeSections={activeSections}

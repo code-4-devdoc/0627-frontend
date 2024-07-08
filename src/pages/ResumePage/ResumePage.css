@@ -68,7 +68,7 @@
         position: absolute;
         left: 50%;
         top: 0;
-        transform: translateX(-50%) scale(1.2);
+        transform: translateX(-50%) scale(1.1);
         transform-origin: top center;
         width: 80%;
         height: auto;

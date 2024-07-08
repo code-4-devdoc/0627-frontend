@@ -42,8 +42,8 @@ html, body {
 }
 
 .App-logo {
-  width: 450px;
-  height: 450px;
+  width: 672px;
+  height: 378px;
   margin: 0;
   animation: float 3s ease-in-out infinite; /* 위아래로 살짝 이동하는 애니메이션 추가 */
 }
@@ -68,7 +68,8 @@ html, body {
   width: 200px;
   padding: 10px;
   margin-top: 20px;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
+  font-weight: bold;
   border: none;
   border-radius: 5px;
   cursor: pointer;

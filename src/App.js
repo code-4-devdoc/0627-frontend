@@ -31,12 +31,12 @@ class App extends React.Component {
                 </div>
                 <div className="rightPanel">
                     <img src={logo} className="App-logo" alt="logo" /> {/* 로고 이미지 */}
-                    <p className="App-text">이력서를 작성하시겠어요?</p> {/* 텍스트 */}
+                    <p className="App-text">개발자를 위한 이력서 작성 서비스 </p> {/* 텍스트 */}
                     <button
                         className="App-button"
                         onClick={this.handleButtonClick}
                     >
-                        이력서 작성 시작 {/* 버튼 */}
+                        회원 가입 {/* 버튼 */}
                     </button>
                 </div>
             </div>

@@ -76,7 +76,7 @@ const HiddenFileInput = styled.input`
 
 const FileInputLabel = styled.label`
     padding: 8px 12px;
-    background-color: #007bff;
+    background-color: #81acff;
     color: white;
     border-radius: 4px;
     cursor: pointer;
@@ -176,8 +176,8 @@ const AboutMe = ({ aboutMe, setAboutMe, resumeId }) => {
     const phoneInput = useInputValidation(aboutMe?.phoneNumber || '', /^\d{3}-\d{4}-\d{4}$/);
     const emailInput = useInputValidation(aboutMe?.email || '', /^[a-zA-Z0-9.]+@[a-z]+\.[a-z]+$/);
     const birthdayInput = useInputValidation(aboutMe?.birthday || '', /^\d{4}\.\d{2}\.\d{2}$/);
-    const githubInput = useInputValidation(aboutMe?.github || '', /^https:\/\/github\.com\/([a-zA-Z0-9_-]+\/?[a-zA-Z0-9_-]*\/?)*$/);
-    const blogInput = useInputValidation(aboutMe?.blog || '', /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/);
+    const githubInput = useInputValidation(aboutMe?.github || '', /^[\s\S]*$/);
+    const blogInput = useInputValidation(aboutMe?.blog || '', /^[\s\S]*$/);
     const introInput = useInputValidation(aboutMe?.introduction || '', /^[\s\S]*$/);
 
     const handleIntroductionChange = (e) => {

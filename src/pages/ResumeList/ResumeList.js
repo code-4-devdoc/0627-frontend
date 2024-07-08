@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
 import styles from './ResumeList.module.css';
 
-
 function ResumeList({ baseUrl }) {
   const [resumes, setResumes] = useState([]);
   const [newTitle, setNewTitle] = useState('');
@@ -123,9 +122,6 @@ function ResumeList({ baseUrl }) {
             </div>
           </div>
 
-          {/*<h2 className={styles.title}>목록</h2>
-          <div className={styles.divider}></div>*/}
-
           <div className={styles.resumeListsContainer}>
             {resumes.length === 0 ? (
                 <p className={styles.noResumes}>등록된 이력서가 없습니다.</p>
@@ -139,8 +135,7 @@ function ResumeList({ baseUrl }) {
                             <div className={styles.resumeTitle} onClick={() => navigate(`/resumes/${resume.id}`)}>
                               {resume.title}
                             </div>
-                            <div
-                                className={styles.resumeDate}>{resume.createdAt ? formatDateTime(resume.createdAt) : 'N/A'}</div>
+                            <div className={styles.resumeDate}>{resume.createdAt ? formatDateTime(resume.createdAt) : 'N/A'}</div>
                           </td>
                           <td className={styles.resumeActions}>
                             <button onClick={() => navigate(`/resumes/${resume.id}`)}>수정</button>
@@ -166,6 +161,13 @@ function ResumeList({ baseUrl }) {
             )}
           </div>
         </div>
+        <button
+            className={styles.loginButton}
+            onClick={() => navigate('/login')}
+            title="이력서가 생성되지 않으면 다시 로그인 하세요. 버튼을 누르면 로그인 페이지로 이동됩니다."
+        >
+          이력서가 생성되지 않나요?
+        </button>
       </div>
   );
 }

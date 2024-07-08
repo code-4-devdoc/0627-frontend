@@ -232,3 +232,16 @@ h2.title {
 .active a {
     font-weight: bold;
 }
+
+.loginButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 10px 20px;
+    background-color: rgb(0, 69, 170);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
