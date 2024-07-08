@@ -55,8 +55,8 @@ const Button = styled.button`
 `;
 
 const ImagePreview = styled.img`
-    width: 120px;
-    height: 180px;
+    width: 164px;
+    height: 220px;
     object-fit: cover;
 `;
 
