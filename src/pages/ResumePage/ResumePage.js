@@ -83,10 +83,13 @@ function ResumePage({ baseUrl }) {
     const [careers, setCareers] = useState([]);
     const [projects, setProjects] = useState([]);
     const [certificates, setCertificates] = useState([]);
+<<<<<<< HEAD
     const [activities, setActivities] = useState([]);
     const [trainings, setTrainings] = useState([]);
     const [aboutMe, setAboutMe] = useState({});
     const [educations, setEducations] = useState([]);
+=======
+>>>>>>> 4572ddda91c4f675b5390fe7135441028fd3be9f
 
     // 데이터 불러오기
     useEffect(() => {
@@ -94,9 +97,13 @@ function ResumePage({ baseUrl }) {
             try {
                 console.log("Fetching resume data for ID:", resumeId);
                 const response = await call(`/api/resumes/${resumeId}`, "GET");
+<<<<<<< HEAD
                 console.log("API Response:", response); // 응답 데이터 로그
                 const { title, languages, awards, skills, careers, certificates, projects, activities, trainings, aboutMe, educations } = response;
                 console.log("Title:", title); // 제목 로그
+=======
+                const { title, languages, awards, skills, careers, certificates, projects } = response;
+>>>>>>> 4572ddda91c4f675b5390fe7135441028fd3be9f
                 setResumeTitle(title || "");
                 setLanguages(languages || []);
                 setAwards(awards || []);
@@ -104,6 +111,7 @@ function ResumePage({ baseUrl }) {
                 setCareers(careers || []);
                 setProjects(projects || []);
                 setCertificates(certificates || []);
+<<<<<<< HEAD
                 setActivities(activities || []);
                 setTrainings(trainings || []);
                 setAboutMe(aboutMe || {});
@@ -120,6 +128,20 @@ function ResumePage({ baseUrl }) {
                     ...(certificates.length ? ['Certificate'] : []),
                     ...(languages.length ? ['Language'] : []),
                 ]);
+=======
+                if (resumeId && response) {
+                    setActiveSections([
+                        ...(languages.length ? ['Language'] : []),
+                        ...(awards.length ? ['Award'] : []),
+                        ...(skills.length ? ['Skill'] : []),
+                        ...(careers.length ? ['Career'] : []),
+                        ...(projects.length ? ['Project'] : []),
+                        ...(certificates.length ? ['Certificate'] : [])
+                    ]);
+                } else {
+                    setActiveSections([]);
+                }
+>>>>>>> 4572ddda91c4f675b5390fe7135441028fd3be9f
             } catch (error) {
                 console.error("Failed to fetch resume data", error);
             }
@@ -147,11 +169,15 @@ function ResumePage({ baseUrl }) {
                 skills: skills,
                 careers: careers,
                 projects: projects,
+<<<<<<< HEAD
                 certificates: certificates,
                 activities: activities,
                 trainings: trainings,
                 aboutMe: aboutMe,
                 educations: educations
+=======
+                certificates: certificates
+>>>>>>> 4572ddda91c4f675b5390fe7135441028fd3be9f
             };
             console.log(data)
 
@@ -303,6 +329,10 @@ function ResumePage({ baseUrl }) {
                             certificates={certificates} setCertificates={setCertificates}
                             languages={languages} setLanguages={setLanguages}
                             resumeId={resumeId}
+<<<<<<< HEAD
+=======
+                            onRemoveBlankSection={handleRemoveBlankSection}
+>>>>>>> 4572ddda91c4f675b5390fe7135441028fd3be9f
                         />
                     </div>
                 </div>

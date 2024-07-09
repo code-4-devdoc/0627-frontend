@@ -45,6 +45,10 @@ const FormContent = ({ activeSections, languages, setLanguages, awards, setAward
         };
     }, [activeSections]);
 
+<<<<<<< HEAD
+=======
+const FormContent = ({ activeSections, languages, setLanguages, awards, setAwards, skills, setSkills, careers, setCareers, projects, setProjects, certificates, setCertificates, resumeId, onRemoveBlankSection }) => {
+>>>>>>> 4572ddda91c4f675b5390fe7135441028fd3be9f
     return (
         <div className="section-content">
             {activeSections.map((section, index) => {
