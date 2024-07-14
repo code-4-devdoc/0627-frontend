@@ -67,5 +67,5 @@ export function signout() {
 
 // 회원가입 처리 함수
 export function signup(userDTO) {
-  return call("/auth/signup", "POST", userDTO, false); // 회원가입 요청 시 authRequired를 false로 설정
+  return call("/auth/signup", "POST", userDTO, false);
 }
