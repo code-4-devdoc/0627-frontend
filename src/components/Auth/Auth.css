@@ -38,7 +38,7 @@ html, body {
 
 .rightPanel {
     min-width: 800px;
-    background-color: white;
+    background-color: #eef0f3;
     width: 77%;
     height: 100%;
     display: flex;

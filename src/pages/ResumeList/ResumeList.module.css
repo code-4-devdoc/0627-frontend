@@ -1,4 +1,3 @@
-
 .App {
     display: flex;
     width: 100%;
@@ -8,7 +7,7 @@
 }
 
 .leftPanel {
-    background-color: #001e59;
+    background-color: #486da3;
     min-width: 200px;
     width: 23%;
     height: 100%;
@@ -37,7 +36,7 @@ h2.title {
 
 
 .rightPanel {
-    background-color: white;
+    background-color: #eef0f3;
     min-width: 600px;
     width: 77%;
     height: 100%;
@@ -57,14 +56,16 @@ h2.title {
 
 
 .inputContainer {
-    background-color: #486da4;
+    background-color: #486da2;
     border-radius: 10px; /* 둥근 모서리 */
     padding: 20px; /* 내부 여백 */
     margin-bottom: 20px; /* 하단 여백 */
-    width: 730px;
+    width: 38.5vw;
     align-items: center;
-    border: 2px solid rgb(162, 195, 255); /* 테두리 추가 */
+
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5); /* 그림자 추가 */
 }
+
 
 .label {
     font-size: 1.5rem;
@@ -73,11 +74,12 @@ h2.title {
 }
 
 .resumeInputBox {
-    width: 730px;
+
     background-color: white;
     border-radius: 5px;
     display: flex;
     align-items: center; /* 수직 정렬 */
+    width: 38.5vw;
 }
 
 .resumeInput {
@@ -108,7 +110,7 @@ h2.title {
     height: 50px;
     background-color: rgba(0, 69, 171, 1);
     color: white;
-    font-size: 1.1rem;
+    font-size: 1.3rem;
     font-weight: bold;
     border-radius: 5px;
     border: none;
@@ -139,7 +141,8 @@ h2.title {
     border-radius: 10px;
     width: 40vw;
     padding: 10px;
-    border: 2px solid rgb(162, 195, 255); /* 테두리 추가 */
+
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5); /* 그림자 추가 */
 }
 
 .resumeTable {
@@ -196,9 +199,8 @@ h2.title {
 .resumeActions button {
     font-size: 1rem;
     padding: 0.3rem;
-    color: #486da4;
-    background-color: transparent;
-    border: 3px solid #486da4;
+    color: white;
+    background-color: rgba(0, 69, 171, 1);
     border-radius: 10px;
     cursor: pointer;
     transition: background-color 0.3s ease;
@@ -225,7 +227,7 @@ h2.title {
 
 .pagination li a {
     font-weight: bold;
-    color: rgba(0, 30, 89, 1);
+    color: rgb(255, 255, 255);
     font-size: 18px;
 }
 
@@ -244,10 +246,10 @@ h2.title {
     top: 10px;
     right: 10px;
     padding: 10px 20px;
-    background-color: rgb(0, 69, 170);
+    background-color: rgba(0, 69, 171, 1);
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 14px;
 }

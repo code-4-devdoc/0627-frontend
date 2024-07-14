@@ -24,7 +24,7 @@ class App extends React.Component {
     render() {
         return (
             <div className="App">
-                <div className="leftPanel">
+                <div className="leftPanel" style={{backgroundColor: "#486da3"}}>
                     <h1 className="devDocTitle">Dev
                         <div style={{marginTop: -30}}>Doc</div>
                     </h1>

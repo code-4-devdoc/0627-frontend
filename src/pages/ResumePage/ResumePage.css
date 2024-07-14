@@ -1,5 +1,5 @@
 .app {
-    background-color: rgba(239, 245, 255, 1);
+    background-color: #eef0f3;
 }
 
 .nav {
@@ -40,7 +40,7 @@
 }
 
 .button-plus {
-    background-color: rgba(129, 172, 255, 1);
+    background-color: #486da4;
 }
 
 .section-content {

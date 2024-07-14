@@ -50,7 +50,7 @@ const ResumeTitle = styled.input`
     font-size: 20px;
     padding: 10px;
     border-radius: 5px;
-    border-color: rgba(89, 127, 200, 1);
+    border-color: #486da4;
     border-width: 3px;
     border-style: solid;
     line-height: 1.5;

@@ -166,7 +166,7 @@ function ResumeList({ baseUrl }) {
             onClick={() => navigate('/login')}
             title="이력서가 생성되지 않으면 다시 로그인 하세요. 버튼을 누르면 로그인 페이지로 이동됩니다."
         >
-          이력서가 생성되지 않나요?
+          이력서가 생성되지 않으면? 로그인
         </button>
       </div>
   );
