@@ -60,7 +60,7 @@ const Input = styled.input`
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 15px;
+    font-size: 17px;
 `;
 
 const Button = styled.div`
@@ -102,7 +102,7 @@ const formats = [
 ];
 
 const ProjectRecord = ({ index, project, onRemove, onUpdate, resumeId }) => {
-    const checkboxOption = "진행 중";
+    const checkboxOption = "진행중";
     const [isChecked, setIsChecked] = useState(project.isCurrent);
 
     const [error, setError] = useState('');
@@ -158,7 +158,7 @@ const ProjectRecord = ({ index, project, onRemove, onUpdate, resumeId }) => {
         return {
             toolbar: {
                 container: [
-                    [{ size: ['small', false] }],
+                    [{ size: ['small', false, 'large', 'huge'] }], // 텍스트 크기 옵션 추가
                     [{ align: [] }],
                     ['bold', 'italic', 'underline', 'strike'],
                     [{ list: 'ordered' }, { list: 'bullet' }],
@@ -172,6 +172,7 @@ const ProjectRecord = ({ index, project, onRemove, onUpdate, resumeId }) => {
             },
         };
     }, []);
+
 
     const handleQuill = () => {
         setQuill(prevQuill => !prevQuill);
@@ -225,14 +226,14 @@ const ProjectRecord = ({ index, project, onRemove, onUpdate, resumeId }) => {
                            onChange={(e) => onUpdate(index, 'title', e.target.value)}/>
                     <div>
                         <div style={{ display: "flex", alignItems:"center", gap: 5, height: 35}}>
-                            <Input style={{width: 70}} placeholder="YYYY.MM" value={project.startDate}
+                            <Input style={{width: 80}} placeholder="YYYY.MM" value={project.startDate}
                                    onChange={(e) => handleStartDateChange(e.target.value)}/>
                             <span>-</span>
                             <Input
-                                style={{width: 70}}
+                                style={{width: 80}}
                                 placeholder={isChecked ? "N/A" : "YYYY.MM"}
                                 disabled={isChecked}
-                                value={isChecked ? "N/A" : project.endDate}
+                                value={isChecked ? "진행중" : project.endDate}
                                 onChange={(e) => handleEndDateChange(e.target.value)}
                             />
                             <div className="checkbox-label">
@@ -243,7 +244,7 @@ const ProjectRecord = ({ index, project, onRemove, onUpdate, resumeId }) => {
                                 className={isChecked ? "project-status" : "project-status-hidden"}
                                 style={{display: 'none', marginLeft: 10}}
                             >
-                                진행 중
+                                진행중
                             </div>
                         </div>
                         {error && <div className="error" style={{fontSize: 13, color: 'rgba(202, 5, 5, 1)', marginLeft: 2, marginTop: 2}}>{error}</div>}

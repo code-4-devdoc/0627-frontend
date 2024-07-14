@@ -24,7 +24,7 @@ const Input = styled.input`
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 15px;
+    font-size: 17px;
 `;
 
 
@@ -77,12 +77,12 @@ const CertificateRecord = ({index, certificate, onRemove, onUpdate, resumeId }) 
                     </button>
                 </div>
                 <div style={{display: "flex", height: 35, marginTop: 5, gap: 5}}>
-                    <Input style={{width: 150}} placeholder="자격증명"
+                    <Input style={{width: 150}} placeholder="자격증"
                            value={certificate.certificateName} onChange={(e) => handleInputChange('certificateName', e.target.value)}/>
                     <Input style={{width: 150}} placeholder="발행처"
                            value={certificate.issuer} onChange={(e) => handleInputChange('issuer', e.target.value)}/>
                     <div>
-                        <Input style={{width: 70}} placeholder="YYYY.MM" value={certificate.issueDate}
+                        <Input style={{width: 80}} placeholder="YYYY.MM" value={certificate.issueDate}
                                onChange={(e) => handleDateChange(e.target.value)}/>
                         {error && <div style={{fontSize: 13, color: 'rgba(202, 5, 5, 1)'}}>{error}</div>}
                     </div>

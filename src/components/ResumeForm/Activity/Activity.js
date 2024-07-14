@@ -51,7 +51,7 @@ const Activity = ({ activities , setActivities, resumeId }) => {
                 />
             ))}
             <div style={{ height: 10 }}></div>
-            <AddRecord fieldName="대외활동 이력" onClick={addActivity}></AddRecord>
+            <AddRecord fieldName="대외 활동" onClick={addActivity}></AddRecord>
         </SectionContainer>
     );
 };

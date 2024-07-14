@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 // 섹션 목록 정의
 const sections = [
-    { name: 'About Me', detail: '프로필' },
+    { name: 'About Me', detail: '인적 사항' },
     { name: 'Skill', detail: '기술 스택' },
     { name: 'Education', detail: '학력' },
     { name: 'Career', detail: '경력' },
@@ -43,8 +43,8 @@ const CategoryList = ({ onSectionChange, activeSections }) => {
         <div className="category-list">
             {sections.map((section) => (
                 <div key={section.name} className="category-list-item">
-                    <span style={{ width: 100, fontWeight: 'bold' }}>{section.name}</span>
-                    <span style={{ width: 80, textAlign: 'left' }}>{section.detail}</span>
+                    <span style={{ width: 100, fontWeight: 'bold', fontSize: '20px' }}>{section.name}</span>
+                    <span style={{ width: 80, textAlign: 'left', fontSize: '18px' }}>{section.detail}</span>
                     <button
                         className={sectionStates.includes(section.name) ? 'button-minus' : 'button-plus'}
                         onClick={() => toggleSection(section.name)}

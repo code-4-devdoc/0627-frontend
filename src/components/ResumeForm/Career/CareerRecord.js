@@ -62,7 +62,7 @@ const Input = styled.input`
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 15px;
+    font-size: 17px;
     width: 150px;
     height: 20px;
 `;
@@ -234,14 +234,14 @@ const CareerRecord = ({ body, setBody, index, career, onRemove, onUpdate, resume
 
                     <div>
                         <div style={{display: "flex", alignItems: "center", gap: 5}}>
-                            <Input style={{width: 70}} placeholder="YYYY.MM" value={career.startDate}
+                            <Input style={{width: 80}} placeholder="YYYY.MM" value={career.startDate}
                                    onChange={(e) => handleStartDateChange(e.target.value)}/>
                             <span>-</span>
                             <Input
-                                style={{width: 70}}
+                                style={{width: 80}}
                                 placeholder={isChecked ? "N/A" : "YYYY.MM"}
                                 disabled={isChecked}
-                                value={isChecked ? "N/A" : career.endDate}
+                                value={isChecked ? "재직 중" : career.endDate}
                                 onChange={(e) => handleEndDateChange(e.target.value)}
                             />
                             <div className="checkbox-label">
@@ -251,7 +251,7 @@ const CareerRecord = ({ body, setBody, index, career, onRemove, onUpdate, resume
                                 className={isChecked ? "employment-status" : "employment-status-hidden"}
                                 style={{display: 'none', marginLeft: 10}}
                             >
-                                재직 중
+                                재직중
                             </div>
                         </div>
                         {error && <div className="error" style={{fontSize: 13, color: 'rgba(202, 5, 5, 1)', marginLeft: 2, marginTop: 2}}>{error}</div>}

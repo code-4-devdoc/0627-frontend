@@ -12,10 +12,9 @@ class SignUp extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
     const data = new FormData(event.target);
-    const username = data.get("username");
     const email = data.get("email");
     const password = data.get("password");
-    signup({ email: email, username: username, password: password }).then(
+    signup({ email: email, password: password }).then(
         (response) => {
           // 계정 생성 성공 시 login페이지로 리디렉트
           window.location.href = "/login";
@@ -35,13 +34,6 @@ class SignUp extends React.Component {
             <div className="loginContainer">
               <h1 className="loginTitle">회원가입</h1>
               <form onSubmit={this.handleSubmit}>
-                <input
-                    type="text"
-                    name="username"
-                    placeholder="닉네임"
-                    required
-                    className="textField"
-                />
                 <input
                     type="email"
                     name="email"

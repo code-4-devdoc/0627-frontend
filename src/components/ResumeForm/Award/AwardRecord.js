@@ -25,7 +25,7 @@ const Input = styled.input`
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 15px;
+    font-size: 17px;
 `;
 
 const formats = [
@@ -117,7 +117,7 @@ const AwardRecord = ({ index, award, onRemove, onUpdate, resumeId }) => {
                     <Input style={{ width: 150, height: 18 }} placeholder="수상명" value={award.awardName} onChange={(e) => handleInputChange('awardName', e.target.value)} />
                     <Input style={{ width: 150, height: 18 }} placeholder="수상 기관" value={award.awardingInstitution} onChange={(e) => handleInputChange('awardingInstitution', e.target.value)} />
                     <div>
-                        <Input style={{ width: 70 }} placeholder="YYYY.MM" value={award.date} onChange={(e) => handleDateChange(e.target.value)} />
+                        <Input style={{ width: 80 }} placeholder="YYYY.MM" value={award.date} onChange={(e) => handleDateChange(e.target.value)} />
                         {error && <div className="error" style={{fontSize: 13, color: 'rgba(202, 5, 5, 1)', marginLeft: 2, marginTop: 2}}>{error}</div>}
                     </div>
                 </div>

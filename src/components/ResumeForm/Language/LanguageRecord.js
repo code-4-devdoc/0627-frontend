@@ -26,7 +26,7 @@ const Input = styled.input`
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 15px;
+    font-size: 17px;
 `;
 
 const LanguageRecord = ({ index, language, onRemove, onUpdate, resumeId }) => {
@@ -84,7 +84,7 @@ const LanguageRecord = ({ index, language, onRemove, onUpdate, resumeId }) => {
                     <Input style={{ width: 150 }} placeholder="공인시험명" value={language.testName} onChange={(e) => handleInputChange('testName', e.target.value)} />
                     <Input style={{ width: 70 }} placeholder="점수" value={language.score} onChange={(e) => handleInputChange('score', e.target.value)} />
                     <div>
-                        <Input style={{ width: 70 }} placeholder="YYYY.MM" value={language.date} onChange={(e) => handleDateChange(e.target.value)} />
+                        <Input style={{ width: 80 }} placeholder="YYYY.MM" value={language.date} onChange={(e) => handleDateChange(e.target.value)} />
                         {error && <div style={{ fontSize: 13, color: 'rgba(202, 5, 5, 1)' }}>{error}</div>}
                     </div>
                 </div>

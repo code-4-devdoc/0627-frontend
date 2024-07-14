@@ -21,10 +21,12 @@ const GlobalStyle = createGlobalStyle`
             display: none !important;
         }
         .print-center {
-            display: flex;
-            align-items: center;
             justify-content: center;
         }
+    }
+
+    .hidden {
+        display: none !important;
     }
 `;
 
@@ -34,12 +36,11 @@ const Input = styled.input`
     margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    display: block;
-    font-size: 15px;
+    font-size: 17px;
     resize: none;
     overflow: hidden;
     height: auto;
-    width: 190px;
+    width: 220px;
 `;
 
 const Button = styled.button`
@@ -55,8 +56,8 @@ const Button = styled.button`
 `;
 
 const ImagePreview = styled.img`
-    width: 164px;
-    height: 220px;
+    width: 131px;
+    height: 176px;
     object-fit: cover;
 `;
 
@@ -67,7 +68,7 @@ const ImageContainer = styled.div`
     justify-content: center;
     border-style: dashed;
     border-color: rgba(239, 245, 255, 1);
-    padding: 10px 0 10px 0;
+    
 `;
 
 const HiddenFileInput = styled.input`
@@ -97,24 +98,24 @@ const InputContainer = styled.div`
     }
 `;
 
-function useInputValidation(initialValue, pattern) {
+const useInputValidation = (initialValue, pattern) => {
     const [value, setValue] = useState(initialValue);
     const [isValid, setIsValid] = useState(true);
 
-    function onChange(e) {
+    const onChange = (e) => {
         const newValue = e.target.value;
         const valid = pattern.test(newValue);
         setIsValid(valid);
         setValue(newValue);
-    }
+    };
 
-    function reset() {
+    const reset = () => {
         setValue('');
         setIsValid(true);
-    }
+    };
 
     return { value, setValue, onChange, isValid, setIsValid, reset };
-}
+};
 
 const AboutMe = ({ aboutMe, setAboutMe, resumeId }) => {
     const [imagePreviewUrl, setImagePreviewUrl] = useState('');
@@ -153,11 +154,11 @@ const AboutMe = ({ aboutMe, setAboutMe, resumeId }) => {
     };
 
     const [isActive, setIsActive] = useState({
-        phone: false,
-        email: false,
-        githubAddress: false,
+        phone: true,
+        email: true,
+        githubAddress: true,
         blogAddress: false,
-        selfIntroduction: false,
+        selfIntroduction: true,
         birthday: false
     });
 
@@ -192,9 +193,9 @@ const AboutMe = ({ aboutMe, setAboutMe, resumeId }) => {
 
     return (
         <>
-            <GlobalStyle/>
+            <GlobalStyle />
             <SectionContainer title="About Me">
-                <div style={{ display: "flex", paddingTop: 10, justifyContent:'space-between', marginRight: 40 }}>
+                <div style={{ display: "flex", paddingTop: 10, justifyContent: 'space-between', marginRight: 40 }}>
                     <InputContainer className="print-center">
                         <Input
                             placeholder="이름"
@@ -203,7 +204,7 @@ const AboutMe = ({ aboutMe, setAboutMe, resumeId }) => {
                             onChange={(e) => handleInputChange('name', e.target.value)}
                         />
 
-                        <div className={!isActive.birthday ? 'hidden-print' : ''}>
+                        <div className="hidden">
                             <FieldWithToggleButton
                                 icon={birthdayIcon}
                                 placeholder="생년월일 (YYYY.MM.DD)"
@@ -270,8 +271,20 @@ const AboutMe = ({ aboutMe, setAboutMe, resumeId }) => {
                                 }}
                             />
                         </div>
+                    </InputContainer>
 
-                        <div className={!isActive.blogAddress ? 'hidden-print' : ''}>
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                        <input className="image-input-btn" type="file" style={{ display: 'none' }} />
+                        {!imagePreviewUrl && (
+                            <FileInputLabel htmlFor="imageUpload">사진 첨부</FileInputLabel>
+                        )}
+                        <HiddenFileInput id="imageUpload" type="file" onChange={handleImageChange} accept="image/*" />
+                        {imagePreviewUrl && (
+                            <ImageContainer className="image-container">
+                                <ImagePreview className="image-preview" src={imagePreviewUrl} alt="Profile Image" />
+                            </ImageContainer>
+                        )}
+                        <div className="hidden">
                             <FieldWithToggleButton
                                 icon={blogIcon}
                                 placeholder="블로그 주소"
@@ -287,26 +300,13 @@ const AboutMe = ({ aboutMe, setAboutMe, resumeId }) => {
                                 }}
                             />
                         </div>
-
-                    </InputContainer>
-                    <div>
-                        <input className="image-input-btn" type="file" style={{ display: 'none' }} />
-                        {!imagePreviewUrl && (
-                            <FileInputLabel htmlFor="imageUpload">사진 첨부</FileInputLabel>
-                        )}
-                        <HiddenFileInput id="imageUpload" type="file" onChange={handleImageChange} accept="image/*" />
-                        {imagePreviewUrl && (
-                            <ImageContainer className="image-container">
-                                <ImagePreview className="image-preview" src={imagePreviewUrl} alt="Profile Image" />
-                            </ImageContainer>
-                        )}
                     </div>
                 </div>
 
                 <div style={{ display: "flex", marginLeft: 39 }}>
                     <div className={!isActive.selfIntroduction ? 'hidden-print' : ''}>
                         <Input
-                            style={{width: 600, height: 75, fontFamily: "inherit", lineHeight: 1.5}}
+                            style={{ width: 600, height: 75, fontFamily: "inherit", lineHeight: 1.5 }}
                             as="textarea"
                             rows={4}
                             placeholder="자기소개를 입력하세요."
@@ -317,7 +317,7 @@ const AboutMe = ({ aboutMe, setAboutMe, resumeId }) => {
                             onChange={handleIntroductionChange}
                         />
                         {(isActive.selfIntroduction && !introInput.isValid) && (
-                            <p style={{color: 'rgba(202, 5, 5, 1)', marginTop: -8, marginBottom: 7, fontSize: 13}}>
+                            <p style={{ color: 'rgba(202, 5, 5, 1)', marginTop: -8, marginBottom: 7, fontSize: 13 }}>
                                 입력을 확인해 주세요.
                             </p>
                         )}

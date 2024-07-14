@@ -6,6 +6,10 @@ html, body {
   height: 100%;
 }
 
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
 .App {
   display: flex;
   width: 100%;
@@ -42,8 +46,7 @@ html, body {
 }
 
 .App-logo {
-  width: 672px;
-  height: 378px;
+  width: 50vw;
   margin: 0;
   animation: float 3s ease-in-out infinite; /* 위아래로 살짝 이동하는 애니메이션 추가 */
 }
@@ -58,7 +61,7 @@ html, body {
 }
 .App-text {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: bold;
   text-align: center;
   color: #001e59;
@@ -68,12 +71,12 @@ html, body {
   width: 200px;
   padding: 10px;
   margin-top: 20px;
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   font-weight: bold;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  background-color: rgba(0, 69, 171, 1);
+  background-color: rgb(72, 109, 164);
   color: white;
   text-align: center;
 }

@@ -16,7 +16,8 @@ const Input = styled.input`
     border: 1px solid #ccc;
     border-radius: 4px;
     display: block;
-    font-size: 15px;
+    font-size: 18px;
+    width: 220px;
 `;
 
 const Button = styled.button`

@@ -29,7 +29,7 @@ const Input = styled.input`
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 15px;
+    font-size: 17px;
     width: 150px;
 `;
 
@@ -131,20 +131,21 @@ const EducationRecord = ({ index, education, onRemove, onUpdate, resumeId }) => 
                     />
                     {selectedEducationType !== '고등학교' && (
                         <Input placeholder="전공"
+                               style={{width: 270}}
                                value={education.major}
                                onChange={(e => handleInputChange('major', e.target.value))}
                         />)}
                 </div>
-                <div style={{ display: "flex", gap: 5, alignItems: "center", marginTop: 5 }}>
+                <div style={{ display: "flex", gap: 7, alignItems: "center", marginTop: 5 }}>
                     <Input placeholder="입학 (YYYY.MM)"
                            value={education.startDate}
-                           style={{width: 117}}
+                           style={{width: 140}}
                            onChange={(e => handleStartDateChange(e.target.value))}
                     />
                     <span>-</span>
                     <Input placeholder={selectedRadio === '재학' ? 'N/A' : "졸업 (YYYY.MM)"}
                            value={selectedRadio === '재학' ? '' : education.endDate}
-                           style={{width: 117}}
+                           style={{width: 140}}
                            disabled={selectedRadio === '재학'}
                            onChange={(e => handleEndDateChange(e.target.value))}
                     />

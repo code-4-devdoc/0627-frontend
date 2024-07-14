@@ -31,7 +31,6 @@ class App extends React.Component {
                 </div>
                 <div className="rightPanel">
                     <img src={logo} className="App-logo" alt="logo" /> {/* 로고 이미지 */}
-                    <p className="App-text">개발자를 위한 이력서 작성 서비스 </p> {/* 텍스트 */}
                     <button
                         className="App-button"
                         onClick={this.handleButtonClick}

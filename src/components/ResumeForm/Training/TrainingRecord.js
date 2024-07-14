@@ -31,7 +31,7 @@ const Input = styled.input`
     padding: 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    font-size: 15px;
+    font-size: 17px;
 `;
 
 const TrainingRecord = ({index, training, onRemove, onUpdate, resumeId}) => {
@@ -122,15 +122,15 @@ const TrainingRecord = ({index, training, onRemove, onUpdate, resumeId}) => {
                         />
                     </div>
                     <div>
-                        <div style={{display: "flex", gap: 5, alignItems: "center", marginLeft: 5}}>
-                            <Input style={{width: 70}} placeholder="YYYY.MM" value={training.startDate}
+                        <div style={{display: "flex", gap: 7, alignItems: "center", marginLeft: 5}}>
+                            <Input style={{width: 80}} placeholder="YYYY.MM" value={training.startDate}
                                    onChange={(e) => handleStartDateChange(e.target.value)}/>
                             <span>-</span>
                             <Input
-                                style={{width: 70}}
+                                style={{width: 80}}
                                 placeholder={isChecked ? "N/A" : "YYYY.MM"}
                                 disabled={isChecked}
-                                value={isChecked ? "N/A" : training.endDate}
+                                value={isChecked ? "진행 중" : training.endDate}
                                 onChange={(e) => handleEndDateChange(e.target.value)}
                             />
                             <div className="checkbox-label">
